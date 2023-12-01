@@ -13,9 +13,6 @@ import java.util.*;
  * The FileShareClient class represents the main client application for a CORBA-based P2P file sharing system.
  */
 public class FileShareClient {
-
-    // Change it to the actual IP address of your CORBA file-sharing register server.
-    private static final String CORBA_SERVER_IP_ADDRESS = "198.18.0.1";
     private static String socketServerAddress;
     private static int port;
     private static FileShareService fileShare;
