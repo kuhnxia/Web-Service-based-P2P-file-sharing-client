@@ -11,7 +11,7 @@ import java.nio.file.*;
 public class LocalFileHelper {
     private static String sharedFilesDirectory;
     private static String receivedFilesDirectory;
-    private static final String APPLICATION_CACHE_DIRECTORY = "CORBA-based-P2P-file-sharing-application";
+    private static final String APPLICATION_CACHE_DIRECTORY = "Web-Service-based-P2P-file-sharing-application";
     public static final String SHARED_FILES_DIRECTORY_PART = "shared_files";
     public static final String RECEIVED_FILES_DIRECTORY_PART = "received_files";
 

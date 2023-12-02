@@ -13,8 +13,8 @@ public class LocalIPAddressHelper {
      *
      * @return A List of InetAddress objects representing local IPv4 addresses.
      */
-    public static List<InetAddress> getLocalIPAddresses() {
-        List<InetAddress> inet4Addresses = new ArrayList<>();
+    public static List<String> getLocalIPAddresses() {
+        List<String> inet4Addresses = new ArrayList<>();
 
         try{
             Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
@@ -28,7 +28,7 @@ public class LocalIPAddressHelper {
                     while (addresses.hasMoreElements()) {
                         InetAddress address = addresses.nextElement();
                         if (address instanceof Inet4Address) {
-                            inet4Addresses.add(address);
+                            inet4Addresses.add(address.getHostAddress());
                         }
                     }
                 }

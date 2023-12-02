@@ -206,16 +206,16 @@ public class FileShareClient {
      * @return The IP address of the socket server.
      */
     private static String getSocketServerAddress() {
-        List<InetAddress> inet4Addresses = LocalIPAddressHelper.getLocalIPAddresses();
+        List<String> inet4Addresses = LocalIPAddressHelper.getLocalIPAddresses();
 
         if (inet4Addresses.size() == 1){
-            return inet4Addresses.get(0).getHostAddress();
+            return inet4Addresses.get(0);
         } else {
             System.out.println("You are using not only one network interfaces, such as Ethernet, WiFi, Cellular, VPN.\n" +
                     "Choose the correct IP that the router assigned to you in your local network: \n");
             int i = 1;
-            for (InetAddress inet4Address : inet4Addresses) {
-                System.out.printf("Enter %d if you will use local IP: %s\n\n", i, inet4Address.getHostAddress());
+            for (String inet4Address : inet4Addresses) {
+                System.out.printf("Enter %d if you will use local IP: %s\n\n", i, inet4Address);
                 i++;
             }
             System.out.println("If you do not know which IP you will use to interact with other computers in your local network\n"
@@ -232,7 +232,7 @@ public class FileShareClient {
                     sc.next(); // consume the invalid input to prevent an infinite loop
                 }
             }
-            return inet4Addresses.get(choice-1).getHostAddress();
+            return inet4Addresses.get(choice-1);
 
         }
 
