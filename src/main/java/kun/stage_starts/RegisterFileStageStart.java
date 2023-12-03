@@ -75,21 +75,22 @@ public class RegisterFileStageStart {
         if (selectedFile != null) {
             String sourcePath = selectedFile.getAbsolutePath();
             String fileName =  selectedFile.getName().toString().replace(" ", "_");
-            logListView.getItems().add("Selected File Path: " + sourcePath);
+            logListView.getItems().add(0,"Selected File Path: " + sourcePath);
 
             // Register file
             Response response = FileShareService .registerFile(fileName, ClientSocketHelper.getIP(), ClientSocketHelper.getPort());
-            logListView.getItems().add(response.readEntity(String.class));
+            logListView.getItems().add(0,response.readEntity(String.class));
 
             if (response.getStatus() == 200) {
                 LocalFileHelper.copyFileToSharedFolder(sourcePath);
-                logListView.getItems().add("File registered successfully.");
+                logListView.getItems().add(0,"File registered successfully.");
             }
 
 
         } else {
-            logListView.getItems().add("No file selected.");
+            logListView.getItems().add(0,"No file selected.");
         }
+        logListView.getItems().add(0,"\n");
     }
 
 }

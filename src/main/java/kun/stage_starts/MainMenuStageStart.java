@@ -141,24 +141,24 @@ public class MainMenuStageStart {
                         socketServer.start();
                         return true;
                     } else {
-                        logListView.getItems().add("Port " + port + " is already in use.\n"
+                        logListView.getItems().add(0,"Port " + port + " is already in use.\n"
                                 + "Please enter a valid port.\n");
                     }
 
 
                 } else {
-                    logListView.getItems().add("Please enter a valid port from 0 to 65535.\n");
+                    logListView.getItems().add(0,"Please enter a valid port from 0 to 65535.\n");
                 }
 
 
             } else {
-                logListView.getItems().add("Please choose a valid IP.\n");
+                logListView.getItems().add(0,"Please choose a valid IP.\n");
             }
 
         } catch (NumberFormatException e){
-            logListView.getItems().add("Invalid input. Please enter a valid port.\n");
+            logListView.getItems().add(0,"Invalid input. Please enter a valid port.\n");
         } catch (Exception e) {
-            logListView.getItems().add("System error.\n");
+            logListView.getItems().add(0,"System error.\n");
         }
 
         return false;
