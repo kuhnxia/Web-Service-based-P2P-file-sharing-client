@@ -1,5 +1,7 @@
 package kun.stage_starts;
 
+import javafx.scene.layout.HBox;
+import kun.helpers.ClientSocketHelper;
 import kun.helpers.LocalFileHelper;
 import kun.helpers.LocalNetworkHelper;
 import kun.sockets.SocketServerThread;
@@ -25,13 +27,23 @@ public class MainMenuStageStart {
     private ComboBox<String> ipComboBox;
     private TextField portTextField;
     private Button startClientButton;
-    private TextArea logTextArea;
+    private ListView<String> logListView;
 
     // For Main Menu Scene
+
+    // For Register File
     private Button registerFileButton;
+
+    // For Cancel
     private Button cancelSharingButton;
+    private HBox root;
+    private ComboBox<String> fileComboBox;
+
+    // For Search
     private Button searchSharingFilesButton;
     private Button stopClientButton;
+
+
 
     public MainMenuStageStart(Stage stage) {
         this.stage = stage;
@@ -79,11 +91,11 @@ public class MainMenuStageStart {
 
                 Scene mainMenuScene = new Scene(mainMenuGrid, 800, 600);
                 stage.setScene(mainMenuScene);
+
             }
         });
 
-        logTextArea = new TextArea();
-        logTextArea.setEditable(false);
+        logListView = new ListView<>();
 
         // Set font sizes
         ipLabel.setStyle("-fx-font-size: 32;");
@@ -103,7 +115,7 @@ public class MainMenuStageStart {
         startClientGrid.add(portLabel, 0, 2);
         startClientGrid.add(portTextField, 0, 3);
         startClientGrid.add(startClientButton, 0, 4);
-        startClientGrid.add(logTextArea, 0, 5);
+        startClientGrid.add(logListView, 0, 5);
 
     }
 
@@ -112,7 +124,9 @@ public class MainMenuStageStart {
             if (ipComboBox.getValue() != null && !ipComboBox.getValue().isEmpty()) {
 
                 socketServerAddress = ipComboBox.getValue();
+                ClientSocketHelper.setIP(socketServerAddress);
                 port = Integer.parseInt(portTextField.getText());
+                ClientSocketHelper.setPort(port);
 
                 if (port >=0 && port <= 65535) {
                     // Find all in use ports
@@ -127,48 +141,62 @@ public class MainMenuStageStart {
                         socketServer.start();
                         return true;
                     } else {
-                        logTextArea.appendText("Port " + port + " is already in use.\n"
+                        logListView.getItems().add("Port " + port + " is already in use.\n"
                                 + "Please enter a valid port.\n");
                     }
 
 
                 } else {
-                    logTextArea.appendText("Please enter a valid port from 0 to 65535.\n");
+                    logListView.getItems().add("Please enter a valid port from 0 to 65535.\n");
                 }
 
 
             } else {
-                logTextArea.appendText("Please choose a valid IP.\n");
+                logListView.getItems().add("Please choose a valid IP.\n");
             }
 
         } catch (NumberFormatException e){
-            logTextArea.appendText("Invalid input. Please enter a valid port.\n");
+            logListView.getItems().add("Invalid input. Please enter a valid port.\n");
         } catch (Exception e) {
-            logTextArea.appendText("System error.\n");
+            logListView.getItems().add("System error.\n");
         }
 
         return false;
     }
 
     private void configureMainMenuGrid(GridPane mainMenuGrid) {
-        // Create components for the main menu
+        // Set grid property
         mainMenuGrid.setAlignment(Pos.CENTER);
         mainMenuGrid.setPadding(new Insets(80, 80, 80, 80));
-        mainMenuGrid.setVgap(20);
+        mainMenuGrid.setVgap(30);
+
+        // Set column constraints to center the elements
+        ColumnConstraints columnConstraints = new ColumnConstraints();
+        columnConstraints.setHalignment(Pos.CENTER.getHpos());
+        mainMenuGrid.getColumnConstraints().add(columnConstraints);
 
         registerFileButton = new Button("Register File");
         cancelSharingButton = new Button("Cancel Sharing");
-        searchSharingFilesButton = new Button("Search Sharing Files");
+        searchSharingFilesButton = new Button("Search Sharing");
         stopClientButton = new Button("Stop Client");
 
         // Set font sizes for main menu buttons
-        registerFileButton.setStyle("-fx-font-size: 24;");
-        cancelSharingButton.setStyle("-fx-font-size: 24;");
-        searchSharingFilesButton.setStyle("-fx-font-size: 24;");
-        stopClientButton.setStyle("-fx-font-size: 24;");
+        registerFileButton.setStyle("-fx-font-size: 32;");
+        cancelSharingButton.setStyle("-fx-font-size: 32;");
+        searchSharingFilesButton.setStyle("-fx-font-size: 32;");
+        stopClientButton.setStyle("-fx-font-size: 32;");
+
+        // Set fixed width for buttons
+        registerFileButton.setMinWidth(400);
+        cancelSharingButton.setMinWidth(400);
+        searchSharingFilesButton.setMinWidth(400);
+        stopClientButton.setMinWidth(400);
 
         // Add event handlers for main menu buttons
-        registerFileButton.setOnAction(e -> handleRegisterFile());
+        registerFileButton.setOnAction(e -> {
+            Stage registerStage = new Stage();
+            new RegisterFileStageStart(registerStage);
+        });
         cancelSharingButton.setOnAction(e -> handleCancelSharing());
         searchSharingFilesButton.setOnAction(e -> handleSearchSharingFiles());
         stopClientButton.setOnAction(e -> handleStopClient());
@@ -178,12 +206,6 @@ public class MainMenuStageStart {
         mainMenuGrid.add(cancelSharingButton, 0, 1);
         mainMenuGrid.add(searchSharingFilesButton, 0, 2);
         mainMenuGrid.add(stopClientButton, 0, 3);
-    }
-
-    private void handleRegisterFile() {
-        // Implement logic for handling "Register File" button click
-        // Add code to navigate to the corresponding scene or perform the desired action
-        //logTextArea.appendText("Register File button clicked.\n");
     }
 
     private void handleCancelSharing() {

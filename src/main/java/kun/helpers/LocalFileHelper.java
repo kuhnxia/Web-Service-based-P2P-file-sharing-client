@@ -11,7 +11,7 @@ import java.nio.file.*;
 public class LocalFileHelper {
     private static String sharedFilesDirectory;
     private static String receivedFilesDirectory;
-    private static final String APPLICATION_CACHE_DIRECTORY = "Web-Service-based-P2P-file-sharing-application";
+    private static final String APPLICATION_CACHE_DIRECTORY = "Web-Service-based-P2P-file-sharing-client";
     public static final String SHARED_FILES_DIRECTORY_PART = "shared_files";
     public static final String RECEIVED_FILES_DIRECTORY_PART = "received_files";
 
@@ -110,26 +110,27 @@ public class LocalFileHelper {
      * @return True if the file is copied successfully, false otherwise.
      */
     public static boolean copyFileToSharedFolder(String sourceFilePath) {
-        // Create Path object for the source file
-        Path sourcePath = Paths.get(sourceFilePath);
-
-        // Extract file name from the source path
-        String fileName = sourcePath.getFileName().toString();
-
-        // Create Path object for the destination folder
-        Path sharedFolderPath = Paths.get(sharedFilesDirectory);
-
-        // Create Path object for the destination file
-        Path destinationFilePath = sharedFolderPath.resolve(fileName);
-
-        // Check if the destination file already exists
-        if (Files.exists(destinationFilePath)) return true;
-
         try {
+            // Create Path object for the source file
+            Path sourcePath = Paths.get(sourceFilePath);
+
+            // Extract file name from the source path and replace spaces with underscores
+            String fileName = sourcePath.getFileName().toString().replace(" ", "_");
+
+            // Create Path object for the destination folder
+            Path sharedFolderPath = Paths.get(sharedFilesDirectory);
+
+            // Create Path object for the destination file
+            Path destinationFilePath = sharedFolderPath.resolve(fileName);
+
+            // Check if the destination file already exists
+            if (Files.exists(destinationFilePath)) return true;
+
             // Copy the file to the destination folder
             Files.copy(sourcePath, destinationFilePath, StandardCopyOption.REPLACE_EXISTING);
 
             System.out.println("File copied successfully to: " + destinationFilePath);
+
             return true;
         } catch (IOException e) {
             System.err.println("Error copying the file: " + e.getMessage());

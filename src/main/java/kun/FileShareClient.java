@@ -1,5 +1,6 @@
 package kun;
 
+import jakarta.ws.rs.core.Response;
 import kun.service.FileShareService;
 import kun.helpers.LocalFileHelper;
 import kun.helpers.LocalNetworkHelper;
@@ -97,8 +98,8 @@ public class FileShareClient {
                 Boolean copied = LocalFileHelper.copyFileToSharedFolder(sourcePath);
                 Thread.sleep(1000);
                 if (copied){
-                    String message = fileShare.registerFile(fileName, socketServerAddress, port);
-                    System.out.println(message);
+                    Response response = fileShare.registerFile(fileName, socketServerAddress, port);
+                    System.out.println(response.readEntity(String.class));
                 } else {
                     System.out.println("It is not a valid file path");
                 }
@@ -123,8 +124,8 @@ public class FileShareClient {
 
             if (fileName.equals("0"))break;
 
-            String message = fileShare.cancelSharing(fileName, socketServerAddress, port);
-            System.out.println(message);
+            Response response = fileShare.cancelSharing(fileName, socketServerAddress, port);
+            System.out.println(response.readEntity(String.class));
 
             LocalFileHelper.deleteFileFromSharedFolder(fileName);
         }
@@ -141,7 +142,8 @@ public class FileShareClient {
             String fileName = sc.next();
             if (fileName.equals("0")) break;
 
-            String searchResult = fileShare.findSharedFiles(fileName);
+            Response response = fileShare.findSharedFiles(fileName);
+            String searchResult = response.readEntity(String.class);
             if (!searchResult.equals("")){
                 System.out.printf("\nList all available file ids with the same target name %s: \n", fileName);
 
@@ -177,7 +179,8 @@ public class FileShareClient {
 
                 if (fileIds.contains(fileId)) {
                     // Get client information
-                    String[] socketAddress = fileShare.getSocketAddressById(fileId).split(":");
+                    Response response = fileShare.getSocketAddressById(fileId);
+                    String[] socketAddress = response.readEntity(String.class).split(":");
                     String clientIP =socketAddress[0];
                     int clientPort = Integer.parseInt(socketAddress[1]);
 

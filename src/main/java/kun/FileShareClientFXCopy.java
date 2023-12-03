@@ -1,5 +1,6 @@
 package kun;
 
+import jakarta.ws.rs.core.Response;
 import kun.service.FileShareService;
 import kun.helpers.LocalFileHelper;
 import kun.helpers.LocalNetworkHelper;
@@ -93,8 +94,8 @@ public class FileShareClientFXCopy extends Application {
         }
 
         if (copied) {
-            String message = fileShare.registerFile(fileName, socketServerAddress, port);
-            logTextArea.appendText(message + "\n");
+            Response response = fileShare.registerFile(fileName, socketServerAddress, port);
+            logTextArea.appendText(response.readEntity(String.class) + "\n");
         } else {
             logTextArea.appendText("Invalid file path.\n");
         }
