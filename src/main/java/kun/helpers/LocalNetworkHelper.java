@@ -1,12 +1,15 @@
 package kun.helpers;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.*;
 import java.util.*;
 
 /**
  * The LocalIPAddressHelper class provides methods for retrieving local IP addresses.
  */
-public class LocalIPAddressHelper {
+public class LocalNetworkHelper {
 
     /**
      * Gets a list of local IPv4 addresses.
@@ -38,5 +41,27 @@ public class LocalIPAddressHelper {
         }
 
         return inet4Addresses;
+    }
+
+    public static Set<Integer> listPortsInUse() {
+        Set<Integer> inUsePortList = new HashSet<>();
+        try {
+            Process process = Runtime.getRuntime().exec("lsof -i -P -n");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.contains("LISTEN") && line.contains("TCP *:")) {
+                    String[] tokens = line.split("\\s+");
+                    String socketAddress = tokens[tokens.length - 2];
+                    int port = Integer.parseInt(socketAddress.split(":")[1]);
+                    inUsePortList.add(port);
+                }
+            }
+            reader.close();
+        } catch (IOException | NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return inUsePortList;
     }
 }

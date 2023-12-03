@@ -2,7 +2,7 @@ package kun;
 
 import kun.service.FileShareService;
 import kun.helpers.LocalFileHelper;
-import kun.helpers.LocalIPAddressHelper;
+import kun.helpers.LocalNetworkHelper;
 
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -12,7 +12,6 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.scene.control.TextInputDialog;
 
-import java.net.InetAddress;
 import java.util.List;
 import java.util.Optional;
 
@@ -102,7 +101,7 @@ public class FileShareClientFXCopy extends Application {
     }
 
     private String getSocketServerAddress() {
-        List<String> inet4Addresses = LocalIPAddressHelper.getLocalIPAddresses();
+        List<String> inet4Addresses = LocalNetworkHelper.getLocalIPAddresses();
 
         if (inet4Addresses.size() == 1) {
             return inet4Addresses.get(0);

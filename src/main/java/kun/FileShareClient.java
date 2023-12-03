@@ -2,7 +2,7 @@ package kun;
 
 import kun.service.FileShareService;
 import kun.helpers.LocalFileHelper;
-import kun.helpers.LocalIPAddressHelper;
+import kun.helpers.LocalNetworkHelper;
 import kun.sockets.SocketClientThread;
 import kun.sockets.SocketServerThread;
 
@@ -205,7 +205,7 @@ public class FileShareClient {
      * @return The IP address of the socket server.
      */
     private static String getSocketServerAddress() {
-        List<String> inet4Addresses = LocalIPAddressHelper.getLocalIPAddresses();
+        List<String> inet4Addresses = LocalNetworkHelper.getLocalIPAddresses();
 
         if (inet4Addresses.size() == 1){
             return inet4Addresses.get(0);

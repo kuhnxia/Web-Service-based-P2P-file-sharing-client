@@ -3,7 +3,7 @@ package kun;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
-import kun.stages.StartClientStage;
+import kun.stage_starts.MainMenuStageStart;
 
 public class FileShareClientFX extends Application {
 
@@ -13,6 +13,6 @@ public class FileShareClientFX extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        new StartClientStage(primaryStage);
+        new MainMenuStageStart(primaryStage);
     }
 }
