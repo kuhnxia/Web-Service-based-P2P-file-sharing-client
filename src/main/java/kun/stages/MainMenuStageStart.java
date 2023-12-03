@@ -1,10 +1,10 @@
-package kun.stage_starts;
+package kun.stages;
 
-import javafx.scene.layout.HBox;
 import kun.helpers.ClientSocketHelper;
 import kun.helpers.LocalFileHelper;
 import kun.helpers.LocalNetworkHelper;
-import kun.sockets.SocketServerThread;
+import kun.helpers.StageHelper;
+import kun.sockets.SocketServerDeprecated;
 
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
@@ -14,6 +14,10 @@ import javafx.scene.control.*;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import javafx.scene.layout.HBox;
+import javafx.stage.WindowEvent;
+import javafx.event.EventHandler;
+import kun.sockets.SocketServerThread;
 
 import java.util.List;
 import java.util.Set;
@@ -24,6 +28,7 @@ public class MainMenuStageStart {
     // For Start Client Scene.
     private String socketServerAddress;
     private int port;
+    private SocketServerThread socketServer;
     private ComboBox<String> ipComboBox;
     private TextField portTextField;
     private Button startClientButton;
@@ -47,6 +52,7 @@ public class MainMenuStageStart {
 
     public MainMenuStageStart(Stage stage) {
         this.stage = stage;
+        StageHelper.addStage(stage);
         initialize();
     }
 
@@ -58,6 +64,15 @@ public class MainMenuStageStart {
 
         Scene startClientScene = new Scene(startClientGrid, 800, 600);
         stage.setScene(startClientScene);
+
+        // Set the event handler for the stage close request
+        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                // Remove the closed stage from the set
+                StageHelper.removeStage(stage);
+            }
+        });
 
         stage.show();
     }
@@ -129,21 +144,34 @@ public class MainMenuStageStart {
                 ClientSocketHelper.setPort(port);
 
                 if (port >=0 && port <= 65535) {
-                    // Find all in use ports
-                    Set<Integer> inUsePortList = LocalNetworkHelper.listPortsInUse();
 
-                    if (!inUsePortList.contains(port)) {
+                    // Find all in use ports, only available on macOS.
+                    Boolean isMacOS = System.getProperty("os.name").toLowerCase().contains("mac");
+                    if (isMacOS) {
+                        Set<Integer> inUsePortList = LocalNetworkHelper.listPortsInUse();
+                        if (!inUsePortList.contains(port)) {
+                            // Create shared file folder for specific IP and port.
+                            LocalFileHelper.createSharedFileDirectory(socketServerAddress, port);
+
+                            // Create server socket
+                            socketServer = new SocketServerThread(port);
+                            socketServer.start();
+                            return true;
+                        } else {
+                            logListView.getItems().add(0,"Port " + port + " is already in use.\n"
+                                    + "Please enter a valid port.\n");
+                        }
+                    } else {
                         // Create shared file folder for specific IP and port.
                         LocalFileHelper.createSharedFileDirectory(socketServerAddress, port);
 
                         // Create server socket
-                        SocketServerThread socketServer = new SocketServerThread(port);
+                        socketServer = new SocketServerThread(port);
                         socketServer.start();
                         return true;
-                    } else {
-                        logListView.getItems().add(0,"Port " + port + " is already in use.\n"
-                                + "Please enter a valid port.\n");
                     }
+
+
 
 
                 } else {
@@ -221,8 +249,18 @@ public class MainMenuStageStart {
     }
 
     private void handleStopClient() {
-        // Implement logic for handling "Stop Client" button click
-        // Add code to navigate to the corresponding scene or perform the desired action
-        //logTextArea.appendText("Stop Client button clicked.\n");
+        try {
+            // Close all stages
+            StageHelper.getStages().forEach(Stage::close);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        socketServer.stopServer();
     }
 }

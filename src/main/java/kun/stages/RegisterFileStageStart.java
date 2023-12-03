@@ -1,7 +1,8 @@
-package kun.stage_starts;
+package kun.stages;
 
 import kun.helpers.ClientSocketHelper;
 import kun.helpers.LocalFileHelper;
+import kun.helpers.StageHelper;
 import kun.service.FileShareService;
 
 import jakarta.ws.rs.core.Response;
@@ -24,6 +25,7 @@ public class RegisterFileStageStart {
 
     public RegisterFileStageStart(Stage stage) {
         this.stage = stage;
+        StageHelper.addStage(stage);
         initialize();
     }
 
