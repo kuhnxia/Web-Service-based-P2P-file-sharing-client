@@ -4,7 +4,6 @@ import kun.helpers.ClientSocketHelper;
 import kun.helpers.LocalFileHelper;
 import kun.helpers.LocalNetworkHelper;
 import kun.helpers.StageHelper;
-import kun.sockets.SocketServerDeprecated;
 
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;

@@ -1,4 +1,4 @@
-package kun;
+package kun.materials;
 
 import javafx.application.Application;
 import javafx.geometry.Insets;

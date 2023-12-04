@@ -8,7 +8,7 @@ import java.net.Socket;
 /**
  * The SharingRequestHandler class represents a runnable thread that handles sharing requests from clients.
  */
-class SharingRequestHandler implements Runnable {
+public class SharingRequestHandler implements Runnable {
     private Socket clientSocket;
     private String serverIP;
     private int serverPort;

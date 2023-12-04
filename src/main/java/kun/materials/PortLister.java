@@ -1,4 +1,4 @@
-package kun;
+package kun.materials;
 
 import java.io.BufferedReader;
 import java.io.IOException;

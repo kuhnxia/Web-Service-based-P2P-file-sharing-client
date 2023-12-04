@@ -1,4 +1,4 @@
-package kun;
+package kun.materials;
 
 import jakarta.ws.rs.core.Response;
 import kun.service.FileShareService;

@@ -1,4 +1,4 @@
-package kun;
+package kun.materials;
 
 public class OSDetectionExample {
     public static void main(String[] args) {
