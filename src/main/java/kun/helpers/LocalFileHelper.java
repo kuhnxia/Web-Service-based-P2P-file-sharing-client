@@ -12,8 +12,8 @@ public class LocalFileHelper {
     private static String sharedFilesDirectory;
     private static String receivedFilesDirectory;
     private static final String APPLICATION_CACHE_DIRECTORY = "Web-Service-based-P2P-file-sharing-client";
-    public static final String SHARED_FILES_DIRECTORY_PART = "shared_files";
-    public static final String RECEIVED_FILES_DIRECTORY_PART = "received_files";
+    private static final String SHARED_FILES_DIRECTORY_PART = "shared_files";
+    private static final String RECEIVED_FILES_DIRECTORY_PART = "received_files";
 
     /**
      * Creates the shared file directory based on the provided socket server address and port.
@@ -181,6 +181,15 @@ public class LocalFileHelper {
         } else {
             System.out.println("No shared file in the folder");
         }
+    }
+
+    public static File[] getFilesFromSharedFileDirectory() {
+        File folder = new File(sharedFilesDirectory);
+
+        // List all files in the directory.
+        File[] files = folder.listFiles();
+
+        return files;
     }
 
     private static String getSharedFilesDirectory(String socketServerAddress, int port) {

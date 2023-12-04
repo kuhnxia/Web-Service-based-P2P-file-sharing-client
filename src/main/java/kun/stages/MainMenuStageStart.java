@@ -225,7 +225,10 @@ public class MainMenuStageStart {
             Stage registerStage = new Stage();
             new RegisterFileStageStart(registerStage);
         });
-        cancelSharingButton.setOnAction(e -> handleCancelSharing());
+        cancelSharingButton.setOnAction(e -> {
+            Stage cancelSharingStage = new Stage();
+            new CancelSharingStageStart(cancelSharingStage);
+        });
         searchSharingFilesButton.setOnAction(e -> handleSearchSharingFiles());
         stopClientButton.setOnAction(e -> handleStopClient());
 
