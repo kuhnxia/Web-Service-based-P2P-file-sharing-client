@@ -81,7 +81,7 @@ public class MainMenuStageStart {
 
         startClientGrid.setAlignment(Pos.CENTER);
         startClientGrid.setPadding(new Insets(80, 80, 80, 80));
-        startClientGrid.setVgap(20);
+        startClientGrid.setVgap(23);
 
         // Create components
         Label ipLabel = new Label("Choose your correct local IP:");
@@ -196,7 +196,7 @@ public class MainMenuStageStart {
         // Set grid property
         mainMenuGrid.setAlignment(Pos.CENTER);
         mainMenuGrid.setPadding(new Insets(80, 80, 80, 80));
-        mainMenuGrid.setVgap(30);
+        mainMenuGrid.setVgap(34);
 
         // Set column constraints to center the elements
         ColumnConstraints columnConstraints = new ColumnConstraints();
@@ -257,7 +257,7 @@ public class MainMenuStageStart {
         }
 
         try {
-            Thread.sleep(1000);
+            Thread.sleep(500);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

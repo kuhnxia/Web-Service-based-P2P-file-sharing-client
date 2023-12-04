@@ -35,7 +35,7 @@ public class RegisterFileStageStart {
         GridPane registerFileGrid = new GridPane();
         configureRegisterFileGrid(registerFileGrid);
 
-        Scene registerFileScene = new Scene(registerFileGrid, 800, 600);
+        Scene registerFileScene = new Scene(registerFileGrid, 700, 525);
         stage.setScene(registerFileScene);
 
         stage.show();
@@ -44,7 +44,7 @@ public class RegisterFileStageStart {
     private void configureRegisterFileGrid(GridPane registerFileGrid) {
         registerFileGrid.setAlignment(Pos.CENTER);
         registerFileGrid.setPadding(new Insets(80, 80, 80, 80));
-        registerFileGrid.setVgap(30);
+        registerFileGrid.setVgap(34);
 
         // Set column constraints to center the elements
         ColumnConstraints columnConstraints = new ColumnConstraints();
@@ -52,8 +52,9 @@ public class RegisterFileStageStart {
         registerFileGrid.getColumnConstraints().add(columnConstraints);
 
         chooseButton = new Button("Choose..");
-        chooseButton.setStyle("-fx-font-size: 32;");
+        chooseButton.setStyle("-fx-font-size: 28;");
         logListView = new ListView<>();
+        logListView.setStyle("-fx-font-size: 12;");
         logListView.setMinWidth(600);
 
         chooseButton.setOnAction(e -> registerFile());

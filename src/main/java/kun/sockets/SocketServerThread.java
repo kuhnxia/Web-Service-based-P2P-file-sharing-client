@@ -30,7 +30,7 @@ public class SocketServerThread extends Thread{
     public void run() {
         try {
             ServerSocket serverSocket = new ServerSocket(port);
-            serverSocket.setSoTimeout(2000);
+            serverSocket.setSoTimeout(1000);
             System.out.println("Server is listening on port " + port);
 
             while (isRunning) {
