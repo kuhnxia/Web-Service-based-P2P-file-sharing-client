@@ -1,19 +1,19 @@
 package kun.stages;
 
+import kun.helpers.ClientSocketHelper;
+import kun.helpers.LocalFileHelper;
+import kun.helpers.StageHelper;
+import kun.service.FileShareService;
+
 import jakarta.ws.rs.core.Response;
-import javafx.application.Application;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import kun.helpers.ClientSocketHelper;
-import kun.helpers.LocalFileHelper;
-import kun.helpers.StageHelper;
-import kun.service.FileShareService;
 
 import java.io.File;
 import java.util.Arrays;
@@ -37,7 +37,7 @@ public class CancelSharingStageStart {
         configureCancelSharingGrid(cancelSharingGrid);
 
         // Set up the scene
-        Scene scene = new Scene(cancelSharingGrid, 600, 400);
+        Scene scene = new Scene(cancelSharingGrid, 400, 300);
         stage.setScene(scene);
 
         stage.show();
@@ -45,29 +45,30 @@ public class CancelSharingStageStart {
 
     private void configureCancelSharingGrid(GridPane cancelSharingGrid) {
         cancelSharingGrid.setAlignment(Pos.CENTER);
-        cancelSharingGrid.setPadding(new Insets(80, 80, 80, 80));
-        cancelSharingGrid.setVgap(30);
+        cancelSharingGrid.setPadding(new Insets(40, 40, 40, 40));
+        cancelSharingGrid.setVgap(20);
 
         // Set column constraints to center the elements
         ColumnConstraints columnConstraints = new ColumnConstraints();
         columnConstraints.setHalignment(Pos.CENTER.getHpos());
         cancelSharingGrid.getColumnConstraints().add(columnConstraints);
 
-        Button refreshButton = new Button("Refresh Current Sharing Files");
+        Button refreshButton = new Button("Refresh Current Sharing");
         ComboBox<String> fileComboBox = new ComboBox<>();
         fileComboBox.setPromptText("Select File to Cancel");
         messageLabel = new Label();
 
-        refreshButton.setMinWidth(500);
-        fileComboBox.setMinWidth(500);
+        refreshButton.setMinWidth(330);
         refreshButton.setStyle("-fx-font-size: 20;");
         fileComboBox.setStyle("-fx-font-size: 18;");
-        messageLabel.setStyle("-fx-font-size: 14;");
+        messageLabel.setStyle("-fx-font-size: 11;");
+        messageLabel.setWrapText(true);
+        messageLabel.setMaxWidth(330);
 
         showAllSharedFiles(fileComboBox);
         refreshButton.setOnAction(refreshEvent -> {
-            fileComboBox.setPromptText("Select File to Cancel");
             showAllSharedFiles(fileComboBox);
+            fileComboBox.setPromptText("Select File to Cancel");
             messageLabel.setText("Current Sharing Files Refreshed!");
         });
 

@@ -4,6 +4,7 @@ import kun.helpers.ClientSocketHelper;
 import kun.helpers.LocalFileHelper;
 import kun.helpers.LocalNetworkHelper;
 import kun.helpers.StageHelper;
+import kun.sockets.SocketServerThread;
 
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
@@ -16,7 +17,6 @@ import javafx.stage.Stage;
 import javafx.scene.layout.HBox;
 import javafx.stage.WindowEvent;
 import javafx.event.EventHandler;
-import kun.sockets.SocketServerThread;
 
 import java.util.List;
 import java.util.Set;
@@ -31,7 +31,8 @@ public class MainMenuStageStart {
     private ComboBox<String> ipComboBox;
     private TextField portTextField;
     private Button startClientButton;
-    private ListView<String> logListView;
+    private Label socketMessageLabel;
+    //private ListView<String> logListView;
 
     // For Main Menu Scene
 
@@ -65,13 +66,13 @@ public class MainMenuStageStart {
         stage.setScene(startClientScene);
 
         // Set the event handler for the stage close request
-        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+        /*stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent event) {
                 // Remove the closed stage from the set
                 StageHelper.removeStage(stage);
             }
-        });
+        });*/
 
         stage.show();
     }
@@ -109,7 +110,7 @@ public class MainMenuStageStart {
             }
         });
 
-        logListView = new ListView<>();
+        socketMessageLabel = new Label();
 
         // Set font sizes
         ipLabel.setStyle("-fx-font-size: 32;");
@@ -129,7 +130,7 @@ public class MainMenuStageStart {
         startClientGrid.add(portLabel, 0, 2);
         startClientGrid.add(portTextField, 0, 3);
         startClientGrid.add(startClientButton, 0, 4);
-        startClientGrid.add(logListView, 0, 5);
+        startClientGrid.add(socketMessageLabel, 0, 5);
 
     }
 
@@ -157,7 +158,7 @@ public class MainMenuStageStart {
                             socketServer.start();
                             return true;
                         } else {
-                            logListView.getItems().add(0,"Port " + port + " is already in use.\n"
+                            socketMessageLabel.setText("Port " + port + " is already in use.\n"
                                     + "Please enter a valid port.\n");
                         }
                     } else {
@@ -174,18 +175,18 @@ public class MainMenuStageStart {
 
 
                 } else {
-                    logListView.getItems().add(0,"Please enter a valid port from 0 to 65535.\n");
+                    socketMessageLabel.setText("Please enter a valid port from 0 to 65535.\n");
                 }
 
 
             } else {
-                logListView.getItems().add(0,"Please choose a valid IP.\n");
+                socketMessageLabel.setText("Please choose a valid IP.\n");
             }
 
         } catch (NumberFormatException e){
-            logListView.getItems().add(0,"Invalid input. Please enter a valid port.\n");
+            socketMessageLabel.setText("Invalid input. Please enter a valid port.\n");
         } catch (Exception e) {
-            logListView.getItems().add(0,"System error.\n");
+            socketMessageLabel.setText("System error.\n");
         }
 
         return false;

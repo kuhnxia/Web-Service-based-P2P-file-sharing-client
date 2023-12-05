@@ -6,6 +6,7 @@ import kun.helpers.StageHelper;
 import kun.service.FileShareService;
 
 import jakarta.ws.rs.core.Response;
+
 import javafx.stage.FileChooser;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -14,6 +15,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+
 import java.io.*;
 
 
@@ -21,7 +23,7 @@ public class RegisterFileStageStart {
     private Stage stage;
     // For Register File
     private Button chooseButton;
-    private ListView<String> logListView;
+    private Label messageLabel;
 
     public RegisterFileStageStart(Stage stage) {
         this.stage = stage;
@@ -35,7 +37,7 @@ public class RegisterFileStageStart {
         GridPane registerFileGrid = new GridPane();
         configureRegisterFileGrid(registerFileGrid);
 
-        Scene registerFileScene = new Scene(registerFileGrid, 700, 525);
+        Scene registerFileScene = new Scene(registerFileGrid, 400, 300);
         stage.setScene(registerFileScene);
 
         stage.show();
@@ -43,24 +45,26 @@ public class RegisterFileStageStart {
 
     private void configureRegisterFileGrid(GridPane registerFileGrid) {
         registerFileGrid.setAlignment(Pos.CENTER);
-        registerFileGrid.setPadding(new Insets(80, 80, 80, 80));
-        registerFileGrid.setVgap(34);
+        registerFileGrid.setPadding(new Insets(40, 40, 40, 40));
+        registerFileGrid.setVgap(20);
 
         // Set column constraints to center the elements
         ColumnConstraints columnConstraints = new ColumnConstraints();
         columnConstraints.setHalignment(Pos.CENTER.getHpos());
         registerFileGrid.getColumnConstraints().add(columnConstraints);
 
-        chooseButton = new Button("Choose..");
-        chooseButton.setStyle("-fx-font-size: 28;");
-        logListView = new ListView<>();
-        logListView.setStyle("-fx-font-size: 12;");
-        logListView.setMinWidth(600);
+        chooseButton = new Button("Select File to Register..");
+        chooseButton.setStyle("-fx-font-size: 24;");
+        chooseButton.setMaxWidth(300);
+        messageLabel = new Label();
+        messageLabel.setStyle("-fx-font-size: 11;");
+        messageLabel.setWrapText(true);
+        messageLabel.setMaxWidth(300);
 
         chooseButton.setOnAction(e -> registerFile());
 
         registerFileGrid.add(chooseButton, 0, 0);
-        registerFileGrid.add(logListView, 0, 1);
+        registerFileGrid.add(messageLabel, 0, 1);
     }
 
     private void registerFile() {
@@ -68,7 +72,7 @@ public class RegisterFileStageStart {
         fileChooser.setTitle("Select File to Register");
 
         // Set the initial directory (optional)
-        // fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+        String registerMessage = "";
 
         // Show the file dialog and get the selected file
         Stage stage = (Stage) chooseButton.getScene().getWindow();
@@ -78,22 +82,23 @@ public class RegisterFileStageStart {
         if (selectedFile != null) {
             String sourcePath = selectedFile.getAbsolutePath();
             String fileName =  selectedFile.getName().toString().replace(" ", "_");
-            logListView.getItems().add(0,"Selected File Path: " + sourcePath);
+            registerMessage += "Selected File Path: " + sourcePath + "\n";
 
             // Register file
             Response response = FileShareService .registerFile(fileName, ClientSocketHelper.getIP(), ClientSocketHelper.getPort());
-            logListView.getItems().add(0,response.readEntity(String.class));
+            registerMessage += response.readEntity(String.class) + "\n";
 
             if (response.getStatus() == 200) {
                 LocalFileHelper.copyFileToSharedFolder(sourcePath);
-                logListView.getItems().add(0,"File registered successfully.");
+                registerMessage += "The Shared File is Saved!\n";
             }
 
 
         } else {
-            logListView.getItems().add(0,"No file selected.");
+            registerMessage += "No File Selected.\n";
         }
-        logListView.getItems().add(0,"\n");
+
+        messageLabel.setText(registerMessage);
     }
 
 }
