@@ -22,9 +22,7 @@ public class LocalFileHelper {
      * @param port                The port number.
      */
     public static void createSharedFileDirectory(String socketServerAddress, int port) {
-        //Get the shared file directory;
-        sharedFilesDirectory = getSharedFilesDirectory(socketServerAddress, port);
-
+        setSharedFilesDirectory(socketServerAddress, port);
         // Create Path object for the destination folder
         Path sharedFolderPath = Paths.get(sharedFilesDirectory);
 
@@ -62,7 +60,7 @@ public class LocalFileHelper {
         if the port is the same.
         */
 
-        String alterSharedFilesDirectory = getSharedFilesDirectory(serverAddress, port);
+        String alterSharedFilesDirectory = getAlterSharedFilesDirectory(serverAddress, port);
         return new File(alterSharedFilesDirectory + File.separator + fileName);
 
     }
@@ -74,8 +72,8 @@ public class LocalFileHelper {
      * @return A File object representing the new file for receiving.
      */
     public static File createNewFileForReceiving(String fileName) {
+        setReceivedFilesDirectory();
 
-        receivedFilesDirectory = getReceivedFilesDirectory();
         File file = new File(receivedFilesDirectory + File.separator + fileName);
 
         // Ensure that the directories leading to the file exist
@@ -192,10 +190,21 @@ public class LocalFileHelper {
         return files;
     }
 
-    private static String getSharedFilesDirectory(String socketServerAddress, int port) {
+    private static void setSharedFilesDirectory(String socketServerAddress, int port) {
         // Get the user's home directory
         String userHome = System.getProperty("user.home");
         
+        sharedFilesDirectory = userHome + File.separator
+                + APPLICATION_CACHE_DIRECTORY + File.separator
+                + SHARED_FILES_DIRECTORY_PART + File.separator
+                + socketServerAddress.replace(".", "_")
+                + "_" + port;
+    }
+
+    private static String getAlterSharedFilesDirectory(String socketServerAddress, int port) {
+        // Get the user's home directory
+        String userHome = System.getProperty("user.home");
+
         return userHome + File.separator
                 + APPLICATION_CACHE_DIRECTORY + File.separator
                 + SHARED_FILES_DIRECTORY_PART + File.separator
@@ -203,13 +212,17 @@ public class LocalFileHelper {
                 + "_" + port;
     }
 
-    private static String getReceivedFilesDirectory() {
+    private static void setReceivedFilesDirectory() {
         // Get the user's home directory
         String userHome = System.getProperty("user.home");
 
-        return userHome + File.separator
+        receivedFilesDirectory = userHome + File.separator
                 + APPLICATION_CACHE_DIRECTORY + File.separator
                 + RECEIVED_FILES_DIRECTORY_PART;
+    }
+
+    public static String getReceivedFilesDirectory() {
+        return receivedFilesDirectory;
     }
 
 }

@@ -32,19 +32,10 @@ public class MainMenuStageStart {
     private TextField portTextField;
     private Button startClientButton;
     private Label socketMessageLabel;
-    //private ListView<String> logListView;
 
     // For Main Menu Scene
-
-    // For Register File
     private Button registerFileButton;
-
-    // For Cancel
     private Button cancelSharingButton;
-    private HBox root;
-    private ComboBox<String> fileComboBox;
-
-    // For Search
     private Button searchSharingFilesButton;
     private Button stopClientButton;
 
@@ -229,26 +220,19 @@ public class MainMenuStageStart {
             Stage cancelSharingStage = new Stage();
             new CancelSharingStageStart(cancelSharingStage);
         });
-        searchSharingFilesButton.setOnAction(e -> handleSearchSharingFiles());
-        stopClientButton.setOnAction(e -> handleStopClient());
+        searchSharingFilesButton.setOnAction(e -> {
+            Stage searchSharingFileStage = new Stage();
+            new SearchSharingStageStart(searchSharingFileStage);
+        });
+        stopClientButton.setOnAction(e -> {
+            handleStopClient();
+        });
 
         // Add components to main menu GridPane
         mainMenuGrid.add(registerFileButton, 0, 0);
         mainMenuGrid.add(cancelSharingButton, 0, 1);
         mainMenuGrid.add(searchSharingFilesButton, 0, 2);
         mainMenuGrid.add(stopClientButton, 0, 3);
-    }
-
-    private void handleCancelSharing() {
-        // Implement logic for handling "Cancel Sharing" button click
-        // Add code to navigate to the corresponding scene or perform the desired action
-        //logTextArea.appendText("Cancel Sharing button clicked.\n");
-    }
-
-    private void handleSearchSharingFiles() {
-        // Implement logic for handling "Search Sharing Files" button click
-        // Add code to navigate to the corresponding scene or perform the desired action
-        //logTextArea.appendText("Search Sharing Files button clicked.\n");
     }
 
     private void handleStopClient() {

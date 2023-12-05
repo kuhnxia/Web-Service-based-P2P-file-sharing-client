@@ -52,7 +52,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
                 <configuration>
-                    <mainClass>kun.FileShareClientFX</mainClass>
+                    <mainClass>kun.materials.SearchSharingApp</mainClass>
                 </configuration>
             </plugin>
         </plugins>

@@ -16,6 +16,9 @@ public class SocketClientThread extends Thread {
     private String ip;
     private int port;
 
+    private boolean received = false;
+    private String resultMessage;
+
     /**
      * Constructs a new SocketClientThread with the specified file name, IP address, and port.
      *
@@ -51,19 +54,19 @@ public class SocketClientThread extends Thread {
             writer.writeUTF(fileName);
 
             // Receive the file from the server
-            Boolean received = receiveFile(fileName, reader);
+            received = receiveFile(fileName, reader);
             if (received) {
-                System.out.println("File received successfully!");
+                resultMessage = "File received successfully!";
             } else {
-                System.out.println("File not found!");
+                resultMessage = "File not found!";
             }
-
-
             // Close the connection
             socket.close();
         } catch (IOException e) {
-            System.out.println("Error:" + e.getMessage());
+            resultMessage = "Error: " + e.getMessage();
         }
+
+        System.out.println(resultMessage);
     }
 
     /**
@@ -93,5 +96,13 @@ public class SocketClientThread extends Thread {
             received = true;
         }
         return received;
+    }
+
+    public boolean isReceived() {
+        return received;
+    }
+
+    public String getResultMessage() {
+        return resultMessage;
     }
 }
