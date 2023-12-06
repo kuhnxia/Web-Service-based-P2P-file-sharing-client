@@ -12,7 +12,7 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <javafx.path>/Users/rocky/.m2/repository/org/openjfx</javafx.path>
+        <javafx.path>javafx/javafx-sdk-17.0.9/lib</javafx.path>
     </properties>
 
     <repositories>
@@ -46,12 +46,12 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
-            <version>17.0.8</version>
+            <version>17.0.9</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
-            <version>17.0.8</version>
+            <version>17.0.9</version>
         </dependency>
     </dependencies>
 
