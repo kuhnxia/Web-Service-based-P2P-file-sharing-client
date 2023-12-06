@@ -6,6 +6,25 @@
 mvn clean javafx:run
 
 ```
+
+```xml
+<!-- WildFly JAX-RS Client dependencies -->
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-client</artifactId>
+            <version>6.2.4.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-client-api</artifactId>
+            <version>6.2.4.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-client-microprofile</artifactId>
+            <version>4.7.9.Final</version>
+        </dependency>
+```
 ```xml
 <build>
         <plugins>

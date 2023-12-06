@@ -6,12 +6,4 @@ jpackage \
     --main-jar Web-Service-based-P2P-file-sharing-client-1.0-SNAPSHOT-jar-with-dependencies.jar \
     --main-class kun.FileShareClient \
     --mac-package-identifier kun \
-    --mac-package-name P2PFileShareClient
-
-jpackage \
---type dmg \
---name YourAppName \
---input target/ --main-jar Web-Service-based-P2P-file-sharing-client-1.0-SNAPSHOT.jar \
---main-class your.main.class.package.YourMainClass \
---mac-package-identifier com.example.yourapp \
---mac-package-name YourAppName
+    --mac-package-name P2PClient
