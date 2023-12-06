@@ -12,51 +12,21 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <javafx.version>17.0.9</javafx.version>
         <javafx.path>javafx-sdk-17.0.9/lib</javafx.path>
-        <jakarta.ws.rs.path>jakarta.ws.rs-api-3.1.0</jakarta.ws.rs.path>
-        <jakarta.activation.path>jakarta.activation-api-2.0.0</jakarta.activation.path>
     </properties>
 
     <dependencies>
-        <!-- WildFly JAX-RS Client dependencies -->
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-client</artifactId>
-            <version>6.2.4.Final</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-client-api</artifactId>
-            <version>6.2.4.Final</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-client-microprofile</artifactId>
-            <version>4.7.9.Final</version>
-        </dependency>
-
         <!-- JavaFX dependencies -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
-            <version>17.0.9</version>
+            <version>${javafx.version}</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
-            <version>17.0.9</version>
-        </dependency>
-
-        <dependency>
-            <groupId>jakarta.activation</groupId>
-            <artifactId>jakarta.activation-api</artifactId>
-            <version>2.0.0</version> <!-- Use the appropriate version -->
-        </dependency>
-
-        <dependency>
-            <groupId>jakarta.ws.rs</groupId>
-            <artifactId>jakarta.ws.rs-api</artifactId>
-            <version>3.1.0</version>
+            <version>${javafx.version}</version>
         </dependency>
     </dependencies>
 
@@ -80,29 +50,79 @@
                     <mainClass>kun.FileShareClient</mainClass>
                     <options>
                         <arg>--module-path</arg>
-                        <arg>${javafx.path}:${jakarta.ws.rs.path}:${jakarta.activation.path}</arg>
+                        <arg>${javafx.path}</arg>
                         <arg>--add-modules</arg>
-                        <arg>javafx.controls,javafx.fxml,kun,jakarta.ws.rs,jakarta.activation</arg>
+                        <arg>javafx.controls,javafx.fxml,kun</arg>
                     </options>
                     <launcher>P2PClient</launcher>
                 </configuration>
             </plugin>
 
+            <!-- Maven JLink Plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jlink-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>create-jlink</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jlink</goal>
+                        </goals>
+                        <configuration>
+                            <launcher>
+                                P2PClient=kun.FileShareClient
+                            </launcher>
+                            <modulePaths>
+                                <!-- Add the path to your additional modules -->
+                                <modulePath>${javafx.path}</modulePath>
+                            </modulePaths>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+<!-- Maven Compiler Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
                     <release>17</release>
-                    <source>17</source>
-                    <target>17</target>
                     <compilerArgs>
                         <arg>--module-path</arg>
-                        <arg>${javafx.path}:${jakarta.ws.rs.path}:${jakarta.activation.path}</arg>
+                        <arg>${javafx.path}</arg>
                         <arg>--add-modules</arg>
-                        <arg>javafx.controls,javafx.fxml,kun,jakarta.ws.rs,jakarta.activation</arg>
+                        <arg>javafx.controls,javafx.fxml,kun</arg>
                     </compilerArgs>
                 </configuration>
+            </plugin>
+
+            <!-- Maven Assembly Plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <mainClass>kun.FileShareClient</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

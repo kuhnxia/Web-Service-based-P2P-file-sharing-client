@@ -5,8 +5,6 @@ import kun.helpers.LocalFileHelper;
 import kun.helpers.StageHelper;
 import kun.service.FileShareService;
 
-import jakarta.ws.rs.core.Response;
-
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -16,6 +14,7 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.net.http.HttpResponse;
 import java.util.Arrays;
 
 
@@ -124,12 +123,19 @@ public class CancelSharingStageStart {
     }
 
     private void handleFileClick(String fileName) {
-        Response response = FileShareService.cancelSharing(
-                fileName, ClientSocketHelper.getIP(), ClientSocketHelper.getPort());
+        HttpResponse response = null;
+        try {
+            response = FileShareService.cancelSharing(
+                    fileName, ClientSocketHelper.getIP(), ClientSocketHelper.getPort());
+            messageLabel.setText(response.body().toString());
+            if (response.statusCode() == 200)
+                LocalFileHelper.deleteFileFromSharedFolder(fileName);
+        } catch (Exception e) {
+            messageLabel.setText(e.getMessage());
+        }
 
 
-        messageLabel.setText(response.readEntity(String.class));
-        if (response.getStatus() == 200)
-            LocalFileHelper.deleteFileFromSharedFolder(fileName);
+
+
     }
 }

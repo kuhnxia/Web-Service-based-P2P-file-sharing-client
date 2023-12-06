@@ -5,8 +5,6 @@ import kun.helpers.LocalFileHelper;
 import kun.helpers.StageHelper;
 import kun.service.FileShareService;
 
-import jakarta.ws.rs.core.Response;
-
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -16,6 +14,7 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import kun.sockets.SocketClientThread;
 
+import java.net.http.HttpResponse;
 import java.util.Arrays;
 import java.awt.Desktop;
 import java.io.File;
@@ -119,10 +118,18 @@ public class RequestFileStageStart {
         int id = Integer.parseInt(selectedId);
 
         // Get client information
-        Response response = FileShareService.getSocketAddressById(id);
-        String responseMessage = response.readEntity(String.class);
-        if (response.getStatus() != 200) {
-            messageLabel.setText(responseMessage);
+        HttpResponse response = null;
+        String responseMessage = null;
+        try {
+            response = FileShareService.getSocketAddressById(id);
+            responseMessage = response.body().toString();
+            if (response.statusCode() != 200) {
+                messageLabel.setText(responseMessage);
+                return;
+            }
+
+        } catch (Exception e) {
+            messageLabel.setText(e.getMessage());
             return;
         }
 
@@ -180,18 +187,24 @@ public class RequestFileStageStart {
     }
 
     private void showTargetFileIds(ComboBox<String> fileComboBox) {
-        Response response = FileShareService.findSharedFiles(fileName);
-        String searchResult = response.readEntity(String.class);
-        if (response.getStatus() != 200) {
-            messageLabel.setText(searchResult);
-        } else {
-            String[] fileIds = searchResult.split(" ");
+        HttpResponse response = null;
+        try {
+            response = FileShareService.findSharedFiles(fileName);
+            String searchResult = response.body().toString();
+            if (response.statusCode() != 200) {
+                messageLabel.setText(searchResult);
+            } else {
+                String[] fileIds = searchResult.split(" ");
 
-            // Clear previous items
-            fileComboBox.getItems().clear();
-            // Add file names to the ComboBox
-            Arrays.stream(fileIds)
-                    .forEach(fileComboBox.getItems()::add);
+                // Clear previous items
+                fileComboBox.getItems().clear();
+                // Add file names to the ComboBox
+                Arrays.stream(fileIds)
+                        .forEach(fileComboBox.getItems()::add);
+            }
+        } catch (Exception e) {
+            messageLabel.setText(e.getMessage());
         }
+
     }
 }

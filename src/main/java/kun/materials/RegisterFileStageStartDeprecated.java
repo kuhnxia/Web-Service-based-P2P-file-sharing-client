@@ -4,7 +4,6 @@ import kun.helpers.ClientSocketHelper;
 import kun.helpers.LocalFileHelper;
 import kun.service.FileShareService;
 
-import jakarta.ws.rs.core.Response;
 import javafx.stage.FileChooser;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -14,6 +13,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import java.io.*;
+import java.net.http.HttpResponse;
 
 
 public class RegisterFileStageStartDeprecated {
@@ -79,10 +79,15 @@ public class RegisterFileStageStartDeprecated {
             logArea.appendText("Selected File Path: " + sourcePath + "\n");
 
             // Register file
-            Response response = FileShareService .registerFile(fileName, ClientSocketHelper.getIP(), ClientSocketHelper.getPort());
-            logArea.appendText(response.readEntity(String.class) + "\n");
+            HttpResponse response = null;
+            try {
+                response = FileShareService.registerFile(fileName, ClientSocketHelper.getIP(), ClientSocketHelper.getPort());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            logArea.appendText(response.body() + "\n");
 
-            if (response.getStatus() == 200)
+            if (response.statusCode()== 200)
                 LocalFileHelper.copyFileToSharedFolder(sourcePath);
 
         } else {

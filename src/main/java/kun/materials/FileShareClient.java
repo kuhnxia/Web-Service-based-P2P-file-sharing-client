@@ -1,12 +1,12 @@
 package kun.materials;
 
-import jakarta.ws.rs.core.Response;
 import kun.service.FileShareService;
 import kun.helpers.LocalFileHelper;
 import kun.helpers.LocalNetworkHelper;
 import kun.sockets.SocketClientThread;
 import kun.sockets.SocketServerThread;
 
+import java.net.http.HttpResponse;
 import java.util.*;
 
 /**
@@ -98,13 +98,15 @@ public class FileShareClient {
                 Boolean copied = LocalFileHelper.copyFileToSharedFolder(sourcePath);
                 Thread.sleep(1000);
                 if (copied){
-                    Response response = fileShare.registerFile(fileName, socketServerAddress, port);
-                    System.out.println(response.readEntity(String.class));
+                    HttpResponse response = fileShare.registerFile(fileName, socketServerAddress, port);
+                    System.out.println(response.body());
                 } else {
                     System.out.println("It is not a valid file path");
                 }
             } catch (InterruptedException e){
                 System.out.println("Error: " + e.getMessage());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
         }
 
@@ -124,8 +126,13 @@ public class FileShareClient {
 
             if (fileName.equals("0"))break;
 
-            Response response = fileShare.cancelSharing(fileName, socketServerAddress, port);
-            System.out.println(response.readEntity(String.class));
+            HttpResponse response = null;
+            try {
+                response = fileShare.cancelSharing(fileName, socketServerAddress, port);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println(response.body());
 
             LocalFileHelper.deleteFileFromSharedFolder(fileName);
         }
@@ -142,8 +149,13 @@ public class FileShareClient {
             String fileName = sc.next();
             if (fileName.equals("0")) break;
 
-            Response response = fileShare.findSharedFiles(fileName);
-            String searchResult = response.readEntity(String.class);
+            HttpResponse response = null;
+            try {
+                response = fileShare.findSharedFiles(fileName);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            String searchResult = response.body().toString();
             if (!searchResult.equals("")){
                 System.out.printf("\nList all available file ids with the same target name %s: \n", fileName);
 
@@ -179,8 +191,8 @@ public class FileShareClient {
 
                 if (fileIds.contains(fileId)) {
                     // Get client information
-                    Response response = fileShare.getSocketAddressById(fileId);
-                    String[] socketAddress = response.readEntity(String.class).split(":");
+                    HttpResponse response = fileShare.getSocketAddressById(fileId);
+                    String[] socketAddress = response.body().toString().split(":");
                     String clientIP =socketAddress[0];
                     int clientPort = Integer.parseInt(socketAddress[1]);
 
@@ -198,6 +210,8 @@ public class FileShareClient {
                 sc.next(); // consume the invalid input to prevent an infinite loop
             } catch (InterruptedException e) {
                 System.out.println("Error: " + e);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
         }
     }

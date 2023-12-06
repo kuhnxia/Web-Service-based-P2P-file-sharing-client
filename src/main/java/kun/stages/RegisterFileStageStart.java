@@ -5,8 +5,6 @@ import kun.helpers.LocalFileHelper;
 import kun.helpers.StageHelper;
 import kun.service.FileShareService;
 
-import jakarta.ws.rs.core.Response;
-
 import javafx.stage.FileChooser;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -17,6 +15,7 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 import java.io.*;
+import java.net.http.HttpResponse;
 
 
 public class RegisterFileStageStart {
@@ -85,14 +84,17 @@ public class RegisterFileStageStart {
             registerMessage += "Selected File Path: " + sourcePath + "\n";
 
             // Register file
-            Response response = FileShareService .registerFile(fileName, ClientSocketHelper.getIP(), ClientSocketHelper.getPort());
-            registerMessage += response.readEntity(String.class) + "\n";
-
-            if (response.getStatus() == 200) {
-                LocalFileHelper.copyFileToSharedFolder(sourcePath);
-                registerMessage += "The Shared File is Saved!\n";
+            HttpResponse response = null;
+            try {
+                response = FileShareService.registerFile(fileName, ClientSocketHelper.getIP(), ClientSocketHelper.getPort());
+                registerMessage += response.body() + "\n";
+                if (response.statusCode() == 200) {
+                    LocalFileHelper.copyFileToSharedFolder(sourcePath);
+                    registerMessage += "The Shared File is Saved!\n";
+                }
+            } catch (Exception e) {
+                registerMessage += e.getMessage() + "\n";
             }
-
 
         } else {
             registerMessage += "No File Selected.\n";

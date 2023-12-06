@@ -1,7 +1,5 @@
 package kun.stages;
 
-import jakarta.ws.rs.core.Response;
-import javafx.application.Application;
 import kun.helpers.StageHelper;
 import kun.service.FileShareService;
 import kun.stages.RequestFileStageStart;
@@ -14,8 +12,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.net.http.HttpResponse;
 
 
 public class SearchSharingStageStart{
@@ -90,16 +87,21 @@ public class SearchSharingStageStart{
             messageLabel.setText("Nothing Enter.");
         } else {
             fileName = fileName.replace(" ", "_");
-            Response response = FileShareService.findSharedFiles(fileName);
-            String searchResult = response.readEntity(String.class);
-            if (response.getStatus() != 200) {
-                messageLabel.setText(searchResult);
-            } else {
-                if (searchResult.equals("")) {
-                    messageLabel.setText("No match result.");
+            HttpResponse response = null;
+            try {
+                response = FileShareService.findSharedFiles(fileName);
+                String searchResult = response.body().toString();
+                if (response.statusCode() != 200) {
+                    messageLabel.setText(searchResult);
                 } else {
-                    found = true;
+                    if (searchResult.equals("")) {
+                        messageLabel.setText("No match result.");
+                    } else {
+                        found = true;
+                    }
                 }
+            } catch (Exception e) {
+                messageLabel.setText(e.getMessage());
             }
 
         }

@@ -1,6 +1,5 @@
 package kun.materials;
 
-import jakarta.ws.rs.core.Response;
 import javafx.application.Application;
 import kun.helpers.StageHelper;
 import kun.service.FileShareService;
@@ -14,6 +13,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
+import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,9 +78,13 @@ public class SearchSharingApp extends Application {
         messageLabel.setWrapText(true);
 
         searchButton.setOnAction(e -> {
-            if (searchSharing()) {
-                Stage requestFileStage = new Stage();
-                new RequestFileStageStart(requestFileStage, fileName);
+            try {
+                if (searchSharing()) {
+                    Stage requestFileStage = new Stage();
+                    new RequestFileStageStart(requestFileStage, fileName);
+                }
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
             }
         });
 
@@ -92,7 +96,7 @@ public class SearchSharingApp extends Application {
 
     }
 
-    private boolean searchSharing() {
+    private boolean searchSharing() throws Exception {
         boolean found =false;
 
         fileName = nameTextField.getText();
@@ -100,9 +104,9 @@ public class SearchSharingApp extends Application {
             messageLabel.setText("Nothing Enter.");
         } else {
             fileName = fileName.replace(" ", "_");
-            Response response = FileShareService.findSharedFiles(fileName);
-            String searchResult = response.readEntity(String.class);
-            if (response.getStatus() != 200) {
+            HttpResponse response = FileShareService.findSharedFiles(fileName);
+            String searchResult = response.body().toString();
+            if (response.statusCode() != 200) {
                 messageLabel.setText(searchResult);
             } else {
                 if (searchResult.equals("")) {

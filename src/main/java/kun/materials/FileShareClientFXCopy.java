@@ -1,6 +1,5 @@
 package kun.materials;
 
-import jakarta.ws.rs.core.Response;
 import kun.service.FileShareService;
 import kun.helpers.LocalFileHelper;
 import kun.helpers.LocalNetworkHelper;
@@ -13,6 +12,7 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.scene.control.TextInputDialog;
 
+import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,7 +55,13 @@ public class FileShareClientFXCopy extends Application {
         Button registerButton = new Button("Register File");
         logTextArea = new TextArea();
 
-        registerButton.setOnAction(e -> registerFile());
+        registerButton.setOnAction(e -> {
+            try {
+                registerFile();
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        });
 
         grid.add(filePathLabel, 0, 0);
         grid.add(filePathField, 1, 0);
@@ -65,7 +71,7 @@ public class FileShareClientFXCopy extends Application {
         grid.add(logTextArea, 0, 3, 2, 1);
     }
 
-    private void registerFile() {
+    private void registerFile() throws Exception {
         // Get the port from user input
         int port;
         try {
@@ -94,8 +100,8 @@ public class FileShareClientFXCopy extends Application {
         }
 
         if (copied) {
-            Response response = fileShare.registerFile(fileName, socketServerAddress, port);
-            logTextArea.appendText(response.readEntity(String.class) + "\n");
+            HttpResponse response = fileShare.registerFile(fileName, socketServerAddress, port);
+            logTextArea.appendText(response.body() + "\n");
         } else {
             logTextArea.appendText("Invalid file path.\n");
         }
