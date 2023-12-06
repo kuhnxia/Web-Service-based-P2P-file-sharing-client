@@ -6,6 +6,33 @@
 mvn clean javafx:run
 
 ```
+
+```xml
+ <!-- Maven JLink Plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jlink-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>create-jlink</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jlink</goal>
+                        </goals>
+                        <configuration>
+                            <launcher>
+                                P2PClient=kun.FileShareClient
+                            </launcher>
+                            <modulePaths>
+                                <!-- Add the path to your additional modules -->
+                                <modulePath>${javafx.path}</modulePath>
+                            </modulePaths>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+```
 ```xml
 <!-- RESTEasy dependencies -->
         <dependency>
