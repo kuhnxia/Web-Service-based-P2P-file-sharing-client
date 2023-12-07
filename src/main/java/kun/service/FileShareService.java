@@ -44,8 +44,7 @@ public class FileShareService {
                     .target(BASE_URI)
                     .path("/cancelSharing")
                     .request()
-                    .build("DELETE", Entity.form(form))
-                    .invoke();
+                    .put(Entity.form(form));
         } catch (ProcessingException e) {
             return Response.status(Response.Status.SERVICE_UNAVAILABLE)
                     .entity("JBoss service not available.")
