@@ -131,7 +131,12 @@ public class CancelSharingStageStart {
             if (response.statusCode() == 200)
                 LocalFileHelper.deleteFileFromSharedFolder(fileName);
         } catch (Exception e) {
-            messageLabel.setText(e.getMessage());
+            if (e.getMessage() == null) {
+                messageLabel.setText("Jboss Service Unavailable!");
+            } else {
+                messageLabel.setText(e.getMessage());
+            }
+
         }
 
 

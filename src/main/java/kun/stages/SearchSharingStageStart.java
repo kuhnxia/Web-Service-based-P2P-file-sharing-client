@@ -101,7 +101,11 @@ public class SearchSharingStageStart{
                     }
                 }
             } catch (Exception e) {
-                messageLabel.setText(e.getMessage());
+                if (e.getMessage() == null) {
+                    messageLabel.setText("Jboss Service Unavailable!");
+                } else {
+                    messageLabel.setText(e.getMessage());
+                }
             }
 
         }

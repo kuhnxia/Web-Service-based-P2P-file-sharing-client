@@ -93,7 +93,12 @@ public class RegisterFileStageStart {
                     registerMessage += "The Shared File is Saved!\n";
                 }
             } catch (Exception e) {
-                registerMessage += e.getMessage() + "\n";
+                if (e.getMessage() == null) {
+                    registerMessage += "Jboss Service Unavailable!";
+                } else {
+                    registerMessage += e.getMessage() + "\n";
+                }
+
             }
 
         } else {
