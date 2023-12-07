@@ -21,6 +21,8 @@ import java.util.Arrays;
 
 public class CancelSharingStageStart {
     private Stage stage;
+    private Button refreshButton;
+    private ComboBox<String> fileComboBox;
     private Label messageLabel;
 
     public CancelSharingStageStart(Stage stage) {
@@ -53,8 +55,8 @@ public class CancelSharingStageStart {
         columnConstraints.setHalignment(Pos.CENTER.getHpos());
         cancelSharingGrid.getColumnConstraints().add(columnConstraints);
 
-        Button refreshButton = new Button("Refresh Current Sharing");
-        ComboBox<String> fileComboBox = new ComboBox<>();
+        refreshButton = new Button("Refresh Current Sharing");
+        fileComboBox = new ComboBox<>();
         fileComboBox.setPromptText("Select File to Cancel");
         messageLabel = new Label();
 
@@ -65,9 +67,9 @@ public class CancelSharingStageStart {
         messageLabel.setWrapText(true);
         messageLabel.setMaxWidth(330);
 
-        showAllSharedFiles(fileComboBox);
+        showAllSharedFiles();
         refreshButton.setOnAction(refreshEvent -> {
-            showAllSharedFiles(fileComboBox);
+            showAllSharedFiles();
             fileComboBox.setPromptText("Select File to Cancel");
             messageLabel.setText("Current Sharing Files Refreshed!");
         });
@@ -91,23 +93,8 @@ public class CancelSharingStageStart {
         cancelSharingGrid.add(messageLabel, 0, 2);
     }
 
-    private void showInformationPopup(String fileName) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Cancel Sharing Alert");
-        alert.setContentText("Are you sure you want to cancel sharing of the file:\n" + fileName);
-
-        // Add an OK button to the pop-up
-        ButtonType okButton = new ButtonType("OK");
-        alert.getButtonTypes().setAll(okButton);
-
-        // Show the pop-up and wait for the user's response
-        alert.showAndWait().ifPresent(response -> {
-                handleFileClick(fileName);
-        });
-    }
-
     // Method to open the sharedFilesDirectory folder and populate the file ComboBox
-    private void showAllSharedFiles(ComboBox<String> fileComboBox) {
+    private void showAllSharedFiles() {
 
         // Populate the file ComboBox with file names from the selected folder.
         File[] files = LocalFileHelper.getFilesFromSharedFileDirectory();
@@ -121,6 +108,21 @@ public class CancelSharingStageStart {
                     .map(File::getName)
                     .forEach(fileComboBox.getItems()::add);
         }
+    }
+
+    private void showInformationPopup(String fileName) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Cancel Sharing Alert");
+        alert.setContentText("Are you sure you want to cancel sharing of the file:\n" + fileName);
+
+        // Add an OK button to the pop-up
+        ButtonType okButton = new ButtonType("OK");
+        alert.getButtonTypes().setAll(okButton);
+
+        // Show the pop-up and wait for the user's response
+        alert.showAndWait().ifPresent(response -> {
+                handleFileClick(fileName);
+        });
     }
 
     private void handleFileClick(String fileName) {

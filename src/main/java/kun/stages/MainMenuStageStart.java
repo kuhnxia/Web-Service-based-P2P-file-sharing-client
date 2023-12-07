@@ -14,9 +14,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import javafx.scene.layout.HBox;
-import javafx.stage.WindowEvent;
-import javafx.event.EventHandler;
 
 import java.util.List;
 import java.util.Set;
@@ -53,17 +50,8 @@ public class MainMenuStageStart {
         GridPane startClientGrid = new GridPane();
         configureStartClientGrid(startClientGrid);
 
-        Scene startClientScene = new Scene(startClientGrid, 800, 600);
+        Scene startClientScene = new Scene(startClientGrid, 600, 450);
         stage.setScene(startClientScene);
-
-        // Set the event handler for the stage close request
-        /*stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(WindowEvent event) {
-                // Remove the closed stage from the set
-                StageHelper.removeStage(stage);
-            }
-        });*/
 
         stage.show();
     }
@@ -95,7 +83,7 @@ public class MainMenuStageStart {
                 GridPane mainMenuGrid = new GridPane();
                 configureMainMenuGrid(mainMenuGrid);
 
-                Scene mainMenuScene = new Scene(mainMenuGrid, 800, 600);
+                Scene mainMenuScene = new Scene(mainMenuGrid, 600, 450);
                 stage.setScene(mainMenuScene);
 
             }
@@ -141,29 +129,14 @@ public class MainMenuStageStart {
                     if (isMacOS) {
                         Set<Integer> inUsePortList = LocalNetworkHelper.listPortsInUse();
                         if (!inUsePortList.contains(port)) {
-                            // Create shared file folder for specific IP and port.
-                            LocalFileHelper.createSharedFileDirectory(socketServerAddress, port);
-
-                            // Create server socket
-                            socketServer = new SocketServerThread(port);
-                            socketServer.start();
-                            return true;
+                            return startSocketThread();
                         } else {
                             socketMessageLabel.setText("Port " + port + " is already in use.\n"
                                     + "Please enter a valid port.\n");
                         }
                     } else {
-                        // Create shared file folder for specific IP and port.
-                        LocalFileHelper.createSharedFileDirectory(socketServerAddress, port);
-
-                        // Create server socket
-                        socketServer = new SocketServerThread(port);
-                        socketServer.start();
-                        return true;
+                        return startSocketThread();
                     }
-
-
-
 
                 } else {
                     socketMessageLabel.setText("Please enter a valid port from 0 to 65535.\n");
@@ -181,6 +154,16 @@ public class MainMenuStageStart {
         }
 
         return false;
+    }
+
+    private boolean startSocketThread() {
+        // Create shared file folder for specific IP and port.
+        LocalFileHelper.createSharedFileDirectory(socketServerAddress, port);
+
+        // Create server socket
+        socketServer = new SocketServerThread(port);
+        socketServer.start();
+        return true;
     }
 
     private void configureMainMenuGrid(GridPane mainMenuGrid) {

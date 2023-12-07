@@ -1,10 +1,9 @@
 package kun.stages;
 
-import jakarta.ws.rs.core.Response;
-import javafx.application.Application;
 import kun.helpers.StageHelper;
 import kun.service.FileShareService;
-import kun.stages.RequestFileStageStart;
+
+import jakarta.ws.rs.core.Response;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -13,10 +12,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-
-import java.util.ArrayList;
-import java.util.List;
-
 
 public class SearchSharingStageStart{
     private Stage stage;

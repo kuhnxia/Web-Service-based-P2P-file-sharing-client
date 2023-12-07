@@ -56,6 +56,7 @@ public class RegisterFileStageStart {
         chooseButton = new Button("Select File to Register..");
         chooseButton.setStyle("-fx-font-size: 24;");
         chooseButton.setMaxWidth(300);
+
         messageLabel = new Label();
         messageLabel.setStyle("-fx-font-size: 11;");
         messageLabel.setWrapText(true);

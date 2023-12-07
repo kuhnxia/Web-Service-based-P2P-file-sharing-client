@@ -115,6 +115,24 @@ public class RequestFileStageStart {
         });
     }
 
+    private void showTargetFileIds(ComboBox<String> fileComboBox) {
+        Response response = FileShareService.findSharedFiles(fileName);
+        int status = response.getStatus();
+        if (response.getStatus() != 200) {
+            String message = response.readEntity(String.class);
+            messageLabel.setText(status +" " + response.getStatusInfo() + ": " + message);
+        } else {
+            String searchResult = response.readEntity(String.class);
+            String[] fileIds = searchResult.split(" ");
+
+            // Clear previous items
+            fileComboBox.getItems().clear();
+            // Add file names to the ComboBox
+            Arrays.stream(fileIds)
+                    .forEach(fileComboBox.getItems()::add);
+        }
+    }
+
     private void getSocketInfoAndRequestFile(String selectedId) {
         int id = Integer.parseInt(selectedId);
 
@@ -176,24 +194,5 @@ public class RequestFileStageStart {
         Thread thread = new Thread(task);
         thread.start();
 
-
-    }
-
-    private void showTargetFileIds(ComboBox<String> fileComboBox) {
-        Response response = FileShareService.findSharedFiles(fileName);
-        int status = response.getStatus();
-        if (response.getStatus() != 200) {
-            String message = response.readEntity(String.class);
-            messageLabel.setText(status +" " + response.getStatusInfo() + ": " + message);
-        } else {
-            String searchResult = response.readEntity(String.class);
-            String[] fileIds = searchResult.split(" ");
-
-            // Clear previous items
-            fileComboBox.getItems().clear();
-            // Add file names to the ComboBox
-            Arrays.stream(fileIds)
-                    .forEach(fileComboBox.getItems()::add);
-        }
     }
 }

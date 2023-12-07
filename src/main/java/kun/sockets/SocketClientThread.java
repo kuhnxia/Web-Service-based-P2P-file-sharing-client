@@ -3,9 +3,7 @@ package kun.sockets;
 import kun.helpers.LocalFileHelper;
 
 import java.io.*;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.SocketAddress;
+import java.net.*;
 
 /**
  * The SocketClientThread class represents a client thread that connects to a server,

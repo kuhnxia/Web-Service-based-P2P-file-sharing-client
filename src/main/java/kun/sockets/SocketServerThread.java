@@ -1,9 +1,7 @@
 package kun.sockets;
 
 import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketTimeoutException;
+import java.net.*;
 
 /**
  * The SocketServerThread class represents a server thread that listens for incoming socket connections
