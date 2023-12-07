@@ -129,7 +129,7 @@ public class CancelSharingStageStart {
 
 
         messageLabel.setText(response.readEntity(String.class));
-
-        LocalFileHelper.deleteFileFromSharedFolder(fileName);
+        if (response.getStatus() == 200)
+            LocalFileHelper.deleteFileFromSharedFolder(fileName);
     }
 }
