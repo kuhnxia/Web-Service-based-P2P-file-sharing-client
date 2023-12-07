@@ -25,7 +25,7 @@ public class FileShareService {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(new URI(BASE_URI + "/registerFile"))
                 .header("Content-Type", "application/x-www-form-urlencoded")
-                .POST(buildFormDataFromMap(formData))
+                .PUT(buildFormDataFromMap(formData))
                 .build();
 
         // Send the request and handle the response
