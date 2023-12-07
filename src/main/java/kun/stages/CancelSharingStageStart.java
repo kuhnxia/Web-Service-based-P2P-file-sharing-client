@@ -127,9 +127,10 @@ public class CancelSharingStageStart {
         Response response = FileShareService.cancelSharing(
                 fileName, ClientSocketHelper.getIP(), ClientSocketHelper.getPort());
 
-
-        messageLabel.setText(response.readEntity(String.class));
-        if (response.getStatus() == 200)
+        String message = response.readEntity(String.class);
+        int status = response.getStatus();
+        messageLabel.setText(status +" " + response.getStatusInfo() + ": " + message);
+        if (status == 200)
             LocalFileHelper.deleteFileFromSharedFolder(fileName);
     }
 }

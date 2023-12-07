@@ -86,9 +86,11 @@ public class RegisterFileStageStart {
 
             // Register file
             Response response = FileShareService .registerFile(fileName, ClientSocketHelper.getIP(), ClientSocketHelper.getPort());
-            registerMessage += response.readEntity(String.class) + "\n";
+            String message = response.readEntity(String.class);
+            int status = response.getStatus();
+            registerMessage += status +" " + response.getStatusInfo() + ": " + message + "\n";
 
-            if (response.getStatus() == 200) {
+            if (status == 200) {
                 LocalFileHelper.copyFileToSharedFolder(sourcePath);
                 registerMessage += "The Shared File is Saved!\n";
             }

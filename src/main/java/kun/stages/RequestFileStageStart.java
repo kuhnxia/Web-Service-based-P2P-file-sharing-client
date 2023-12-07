@@ -181,10 +181,12 @@ public class RequestFileStageStart {
 
     private void showTargetFileIds(ComboBox<String> fileComboBox) {
         Response response = FileShareService.findSharedFiles(fileName);
-        String searchResult = response.readEntity(String.class);
+        int status = response.getStatus();
         if (response.getStatus() != 200) {
-            messageLabel.setText(searchResult);
+            String message = response.readEntity(String.class);
+            messageLabel.setText(status +" " + response.getStatusInfo() + ": " + message);
         } else {
+            String searchResult = response.readEntity(String.class);
             String[] fileIds = searchResult.split(" ");
 
             // Clear previous items

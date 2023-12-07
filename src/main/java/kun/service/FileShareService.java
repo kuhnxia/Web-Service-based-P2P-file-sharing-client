@@ -25,7 +25,6 @@ public class FileShareService {
                     .request()
                     .post(Entity.form(form));
 
-            //message = response.readEntity(String.class);
         } catch (ProcessingException e) {
             return Response.status(Response.Status.SERVICE_UNAVAILABLE)
                     .entity("JBoss service not available.")
@@ -45,6 +44,7 @@ public class FileShareService {
                     .path("/cancelSharing")
                     .request()
                     .put(Entity.form(form));
+
         } catch (ProcessingException e) {
             return Response.status(Response.Status.SERVICE_UNAVAILABLE)
                     .entity("JBoss service not available.")

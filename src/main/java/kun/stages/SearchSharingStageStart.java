@@ -91,15 +91,12 @@ public class SearchSharingStageStart{
         } else {
             fileName = fileName.replace(" ", "_");
             Response response = FileShareService.findSharedFiles(fileName);
-            String searchResult = response.readEntity(String.class);
+            String message = response.readEntity(String.class);
+            int status = response.getStatus();
             if (response.getStatus() != 200) {
-                messageLabel.setText(searchResult);
+                messageLabel.setText(status +" " + response.getStatusInfo() + ": " + message);
             } else {
-                if (searchResult.equals("")) {
-                    messageLabel.setText("No match result.");
-                } else {
-                    found = true;
-                }
+                found = true;
             }
 
         }
