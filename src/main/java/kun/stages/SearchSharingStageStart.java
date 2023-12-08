@@ -8,6 +8,7 @@ import jakarta.ws.rs.core.Response;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.paint.Color;
 import javafx.scene.control.*;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -89,9 +90,12 @@ public class SearchSharingStageStart{
             String message = response.readEntity(String.class);
             int status = response.getStatus();
             if (response.getStatus() != 200) {
+                messageLabel.setTextFill(Color.RED);
                 messageLabel.setText(status +" " + response.getStatusInfo() + ": " + message);
             } else {
                 found = true;
+                messageLabel.setTextFill(Color.WHITE);
+                messageLabel.setText("");
             }
 
         }

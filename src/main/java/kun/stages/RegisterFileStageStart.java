@@ -11,6 +11,7 @@ import javafx.stage.FileChooser;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.paint.Color;
 import javafx.scene.control.*;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -23,7 +24,10 @@ public class RegisterFileStageStart {
     private Stage stage;
     // For Register File
     private Button chooseButton;
-    private Label messageLabel;
+    private Label selectMessageLabel;
+    private Label responseMessageLabel;
+    private Label savedMessageLabel;
+
 
     public RegisterFileStageStart(Stage stage) {
         this.stage = stage;
@@ -57,23 +61,32 @@ public class RegisterFileStageStart {
         chooseButton.setStyle("-fx-font-size: 24;");
         chooseButton.setMaxWidth(300);
 
-        messageLabel = new Label();
-        messageLabel.setStyle("-fx-font-size: 11;");
-        messageLabel.setWrapText(true);
-        messageLabel.setMaxWidth(300);
+        selectMessageLabel = new Label();
+        selectMessageLabel.setStyle("-fx-font-size: 11;");
+        selectMessageLabel.setWrapText(true);
+        selectMessageLabel.setMaxWidth(300);
+
+        responseMessageLabel = new Label();
+        responseMessageLabel.setStyle("-fx-font-size: 11;");
+        responseMessageLabel.setWrapText(true);
+        responseMessageLabel.setMaxWidth(300);
+
+        savedMessageLabel= new Label();
+        savedMessageLabel.setStyle("-fx-font-size: 11;");
+        savedMessageLabel.setWrapText(true);
+        savedMessageLabel.setMaxWidth(300);
 
         chooseButton.setOnAction(e -> registerFile());
 
         registerFileGrid.add(chooseButton, 0, 0);
-        registerFileGrid.add(messageLabel, 0, 1);
+        registerFileGrid.add(selectMessageLabel, 0, 1);
+        registerFileGrid.add(responseMessageLabel, 0, 2);
+        registerFileGrid.add(savedMessageLabel, 0, 3);
     }
 
     private void registerFile() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select File to Register");
-
-        // Set the initial directory (optional)
-        String registerMessage = "";
 
         // Show the file dialog and get the selected file
         Stage stage = (Stage) chooseButton.getScene().getWindow();
@@ -83,25 +96,28 @@ public class RegisterFileStageStart {
         if (selectedFile != null) {
             String sourcePath = selectedFile.getAbsolutePath();
             String fileName =  selectedFile.getName().toString().replace(" ", "_");
-            registerMessage += "Selected File Path: " + sourcePath + "\n";
+            selectMessageLabel.setText("Selected File Path: " + sourcePath);
 
             // Register file
             Response response = FileShareService .registerFile(fileName, ClientSocketHelper.getIP(), ClientSocketHelper.getPort());
             String message = response.readEntity(String.class);
             int status = response.getStatus();
-            registerMessage += status +" " + response.getStatusInfo() + ": " + message + "\n";
+
+            if (status == 200) {
+                responseMessageLabel.setTextFill(Color.BLUE);
+            } else responseMessageLabel.setTextFill(Color.RED);
+
+            responseMessageLabel.setText(status +" " + response.getStatusInfo() + ": " + message);
 
             if (status == 200) {
                 LocalFileHelper.copyFileToSharedFolder(sourcePath);
-                registerMessage += "The Shared File is Saved!\n";
+                savedMessageLabel.setText("The Shared File is Saved!");
             }
 
 
         } else {
-            registerMessage += "No File Selected.\n";
+            selectMessageLabel.setText("No File Selected.");
         }
-
-        messageLabel.setText(registerMessage);
     }
 
 }

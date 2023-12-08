@@ -1,20 +1,22 @@
 package kun.stages;
 
-import javafx.concurrent.Task;
 import kun.helpers.LocalFileHelper;
 import kun.helpers.StageHelper;
 import kun.service.FileShareService;
+import kun.sockets.SocketClientThread;
 
 import jakarta.ws.rs.core.Response;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.paint.Color;
 import javafx.scene.control.*;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import kun.sockets.SocketClientThread;
+import javafx.concurrent.Task;
+
 
 import java.util.Arrays;
 import java.awt.Desktop;
@@ -120,6 +122,7 @@ public class RequestFileStageStart {
         int status = response.getStatus();
         if (response.getStatus() != 200) {
             String message = response.readEntity(String.class);
+            messageLabel.setTextFill(Color.RED);
             messageLabel.setText(status +" " + response.getStatusInfo() + ": " + message);
         } else {
             String searchResult = response.readEntity(String.class);
