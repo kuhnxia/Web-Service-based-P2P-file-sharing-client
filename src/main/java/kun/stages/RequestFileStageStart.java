@@ -170,15 +170,9 @@ public class RequestFileStageStart {
         if (socketClient.isReceived()) {
             //Indicate Download completed.
             progressBar.setProgress(1);
-
             // Open the receivedFilesDirectory in the system's file explorer
-            String receivedFilesDirectory = LocalFileHelper.getReceivedFilesDirectory();
-            File receivedFile = new File(receivedFilesDirectory + File.separator + fileName);
-            try {
-                Desktop.getDesktop().open(receivedFile);
-            } catch (IOException e) {
-                messageLabel.setText("Error opening the file directory: " + e.getMessage());
-            }
+            String openFileMessage = LocalFileHelper.openReceivedFileDirectory(fileName);
+            messageLabel.setText(openFileMessage);
         }
 
     }

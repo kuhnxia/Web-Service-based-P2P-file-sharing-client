@@ -1,5 +1,6 @@
 package kun.helpers;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
@@ -147,9 +148,24 @@ public class LocalFileHelper {
         return files;
     }
 
-    public static String getReceivedFilesDirectory() {
-        return receivedFilesDirectory;
+    public static String openReceivedFileDirectory(String fileName) {
+        File receivedFile = new File(receivedFilesDirectory + File.separator + fileName);
+        String message = "";
+        try {
+            if (Desktop.isDesktopSupported()) {
+                Desktop desktop = Desktop.getDesktop();
+                if (desktop.isSupported(Desktop.Action.OPEN)) {
+                    // Open the file explorer at the directory
+                    desktop.open(receivedFile.getParentFile());
+                }
+            } else message = "System doesn't support open directories.";
+
+        } catch (IOException e) {
+            message = "Error opening the file directory: " + e.getMessage();
+        }
+        return message;
     }
+
 
     private static void setSharedFilesDirectory(String socketServerAddress, int port) {
         // Get the user's home directory
