@@ -1,5 +1,6 @@
 package kun.helpers;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
@@ -7,13 +8,23 @@ import java.nio.file.*;
 /**
  * The LocalFileHelper class provides methods for managing local files, including file creation,
  * copying, deletion, and listing within a shared folder structure.
+ *
+ * This class assumes a shared folder structure for file management.
+ * The shared folder structure is based on the socket server address and port.
+ * It includes methods for creating, copying, and deleting files within the shared structure.
+ * Additionally, it provides methods for listing files and opening directories.
+ *
+ * Note: Ensure that the shared folder structure is properly set before using other methods.
+ * The shared folder structure is created using the setSharedFilesDirectory method.
+ *
+ * @author Kun Xia
  */
 public class LocalFileHelper {
     private static String sharedFilesDirectory;
     private static String receivedFilesDirectory;
-    private static final String APPLICATION_CACHE_DIRECTORY = "CORBA-based-P2P-file-sharing-application";
-    public static final String SHARED_FILES_DIRECTORY_PART = "shared_files";
-    public static final String RECEIVED_FILES_DIRECTORY_PART = "received_files";
+    private static final String APPLICATION_CACHE_DIRECTORY = "Web-Service-based-P2P-file-sharing-client";
+    private static final String SHARED_FILES_DIRECTORY_PART = "shared_files";
+    private static final String RECEIVED_FILES_DIRECTORY_PART = "received_files";
 
     /**
      * Creates the shared file directory based on the provided socket server address and port.
@@ -22,9 +33,7 @@ public class LocalFileHelper {
      * @param port                The port number.
      */
     public static void createSharedFileDirectory(String socketServerAddress, int port) {
-        //Get the shared file directory;
-        sharedFilesDirectory = getSharedFilesDirectory(socketServerAddress, port);
-
+        setSharedFilesDirectory(socketServerAddress, port);
         // Create Path object for the destination folder
         Path sharedFolderPath = Paths.get(sharedFilesDirectory);
 
@@ -62,7 +71,7 @@ public class LocalFileHelper {
         if the port is the same.
         */
 
-        String alterSharedFilesDirectory = getSharedFilesDirectory(serverAddress, port);
+        String alterSharedFilesDirectory = getAlterSharedFilesDirectory(serverAddress, port);
         return new File(alterSharedFilesDirectory + File.separator + fileName);
 
     }
@@ -74,8 +83,8 @@ public class LocalFileHelper {
      * @return A File object representing the new file for receiving.
      */
     public static File createNewFileForReceiving(String fileName) {
+        setReceivedFilesDirectory();
 
-        receivedFilesDirectory = getReceivedFilesDirectory();
         File file = new File(receivedFilesDirectory + File.separator + fileName);
 
         // Ensure that the directories leading to the file exist
@@ -88,48 +97,33 @@ public class LocalFileHelper {
     }
 
     /**
-     * Extracts the filename from the given source file path.
-     *
-     * @param sourceFilePath The source file path.
-     * @return The filename.
-     */
-    public static String getFilenameFromPath(String sourceFilePath) {
-        // Create Path object for the source file
-        Path sourcePath = Paths.get(sourceFilePath);
-
-        // Extract file name from the source path
-        String fileName = sourcePath.getFileName().toString();
-
-        return fileName;
-    }
-
-    /**
      * Copies a file to the shared folder.
      *
      * @param sourceFilePath The path of the source file.
      * @return True if the file is copied successfully, false otherwise.
      */
     public static boolean copyFileToSharedFolder(String sourceFilePath) {
-        // Create Path object for the source file
-        Path sourcePath = Paths.get(sourceFilePath);
-
-        // Extract file name from the source path
-        String fileName = sourcePath.getFileName().toString();
-
-        // Create Path object for the destination folder
-        Path sharedFolderPath = Paths.get(sharedFilesDirectory);
-
-        // Create Path object for the destination file
-        Path destinationFilePath = sharedFolderPath.resolve(fileName);
-
-        // Check if the destination file already exists
-        if (Files.exists(destinationFilePath)) return true;
-
         try {
+            // Create Path object for the source file
+            Path sourcePath = Paths.get(sourceFilePath);
+
+            // Extract file name from the source path and replace spaces with underscores
+            String fileName = sourcePath.getFileName().toString().replace(" ", "_");
+
+            // Create Path object for the destination folder
+            Path sharedFolderPath = Paths.get(sharedFilesDirectory);
+
+            // Create Path object for the destination file
+            Path destinationFilePath = sharedFolderPath.resolve(fileName);
+
+            // Check if the destination file already exists
+            if (Files.exists(destinationFilePath)) return true;
+
             // Copy the file to the destination folder
             Files.copy(sourcePath, destinationFilePath, StandardCopyOption.REPLACE_EXISTING);
 
             System.out.println("File copied successfully to: " + destinationFilePath);
+
             return true;
         } catch (IOException e) {
             System.err.println("Error copying the file: " + e.getMessage());
@@ -156,36 +150,57 @@ public class LocalFileHelper {
     }
 
     /**
-     * Lists the shared files in the shared folder.
+     * Retrieves an array of files from the shared file directory.
+     *
+     * @return An array of File objects representing files in the shared file directory.
      */
-    public static void listSharedFilesInFolder() {
+    public static File[] getFilesFromSharedFileDirectory() {
         File folder = new File(sharedFilesDirectory);
 
-        // Check if the provided path points to a directory
-        if (!folder.isDirectory()) {
-            System.out.println("Not a valid directory path.");
-            return;
-        }
-        // List all files in the directory
+        // List all files in the directory.
         File[] files = folder.listFiles();
 
-        // Check if there are any files in the directory
-        if (files.length > 0) {
-            // Print the names of all files in the directory
-            for (File file : files) {
-                if (file.isFile()) {
-                    System.out.println(file.getName());
-                }
-            }
-        } else {
-            System.out.println("No shared file in the folder");
-        }
+        return files;
     }
 
-    private static String getSharedFilesDirectory(String socketServerAddress, int port) {
-        // Get the user's home directory
+    /**
+     * Opens the directory containing the received file.
+     *
+     * @param fileName The name of the received file.
+     * @return A message indicating the result of the operation.
+     */
+    public static String openReceivedFileDirectory(String fileName) {
+        File receivedFile = new File(receivedFilesDirectory + File.separator + fileName);
+        String message = "";
+        try {
+            if (Desktop.isDesktopSupported()) {
+                Desktop desktop = Desktop.getDesktop();
+                if (desktop.isSupported(Desktop.Action.OPEN)) {
+                    // Open the file explorer at the directory
+                    desktop.open(receivedFile.getParentFile());
+                }
+            } else message = "System doesn't support open directories.";
+
+        } catch (IOException e) {
+            message = "Error opening the file directory: " + e.getMessage();
+        }
+        return message;
+    }
+
+
+    private static void setSharedFilesDirectory(String socketServerAddress, int port) {
         String userHome = System.getProperty("user.home");
         
+        sharedFilesDirectory = userHome + File.separator
+                + APPLICATION_CACHE_DIRECTORY + File.separator
+                + SHARED_FILES_DIRECTORY_PART + File.separator
+                + socketServerAddress.replace(".", "_")
+                + "_" + port;
+    }
+
+    private static String getAlterSharedFilesDirectory(String socketServerAddress, int port) {
+        String userHome = System.getProperty("user.home");
+
         return userHome + File.separator
                 + APPLICATION_CACHE_DIRECTORY + File.separator
                 + SHARED_FILES_DIRECTORY_PART + File.separator
@@ -193,11 +208,10 @@ public class LocalFileHelper {
                 + "_" + port;
     }
 
-    private static String getReceivedFilesDirectory() {
-        // Get the user's home directory
+    private static void setReceivedFilesDirectory() {
         String userHome = System.getProperty("user.home");
 
-        return userHome + File.separator
+        receivedFilesDirectory = userHome + File.separator
                 + APPLICATION_CACHE_DIRECTORY + File.separator
                 + RECEIVED_FILES_DIRECTORY_PART;
     }

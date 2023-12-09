@@ -7,8 +7,9 @@ import java.net.Socket;
 
 /**
  * The SharingRequestHandler class represents a runnable thread that handles sharing requests from clients.
+ * @author Kun Xia
  */
-class SharingRequestHandler implements Runnable {
+public class SharingRequestHandler implements Runnable {
     private Socket clientSocket;
     private String serverIP;
     private int serverPort;
@@ -59,20 +60,26 @@ class SharingRequestHandler implements Runnable {
         File file = LocalFileHelper.createNewFileForSending(fileName,
                 serverIP, serverPort);
 
-        if (file.exists()) {
-            long length = file.length();
-            writer.writeLong(length);
+        try {
+            if (file.exists()) {
+                long length = file.length();
+                writer.writeLong(length);
 
-            try (FileInputStream fis = new FileInputStream(file)) {
+                FileInputStream fis = new FileInputStream(file);
+
                 byte[] buffer = new byte[4096];
-
                 int bytesRead;
                 while ((bytesRead = fis.read(buffer)) != -1) {
                     writer.write(buffer, 0, bytesRead);
                 }
+
+            } else {
+                // If the file does not exist, send an error message
+                writer.writeLong(-1);
             }
-        } else {
-            // If the file does not exist, send an error message
+        } catch (FileNotFoundException e) {
+            writer.writeLong(-1);
+        } catch (IOException e) {
             writer.writeLong(-1);
         }
     }
