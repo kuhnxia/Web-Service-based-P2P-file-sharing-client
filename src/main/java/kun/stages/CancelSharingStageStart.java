@@ -72,6 +72,7 @@ public class CancelSharingStageStart {
         refreshButton.setOnAction(refreshEvent -> {
             showAllSharedFiles();
             fileComboBox.setPromptText("Select File to Cancel");
+            messageLabel.setTextFill(Color.BLACK);
             messageLabel.setText("Current Sharing Files Refreshed!");
         });
 
