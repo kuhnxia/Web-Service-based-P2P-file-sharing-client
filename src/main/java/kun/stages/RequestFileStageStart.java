@@ -15,7 +15,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import javafx.concurrent.Task;
 
 
 import java.util.Arrays;
@@ -28,6 +27,7 @@ public class RequestFileStageStart {
     private String fileName;
     private Label messageLabel;
     private ProgressBar progressBar;
+    private double  progress = 0.0;
     public RequestFileStageStart(Stage stage, String fileName) {
         this.stage = stage;
         this.fileName = fileName;
@@ -65,6 +65,7 @@ public class RequestFileStageStart {
         fileComboBox.setPromptText("Select ID to Download...");
         messageLabel = new Label();
         progressBar = new ProgressBar();
+        progressBar.setProgress(progress);
 
         headerLabel.setMinWidth(330);
         reminderLabel.setMaxWidth(330);
@@ -155,47 +156,30 @@ public class RequestFileStageStart {
         // Request and send the file.
         SocketClientThread socketClient = new SocketClientThread(fileName, clientIP, clientPort);
 
-        // Set up a task for the progress bar
-        Task<Void> task = new Task<>() {
-            @Override
-            protected Void call() {
-                socketClient.start();
-                try {
-                    socketClient.join();
-                } catch (InterruptedException e) {
-                    messageLabel.setText(e.getMessage());
-                }
-                return null;
+        socketClient.start();
+
+        try {
+            socketClient.join();
+        } catch (InterruptedException e) {
+            messageLabel.setText(e.getMessage());
+        }
+
+        String resultMessage = socketClient.getResultMessage();
+        messageLabel.setText(resultMessage);
+
+        if (socketClient.isReceived()) {
+            //Indicate Download completed.
+            progressBar.setProgress(1);
+
+            // Open the receivedFilesDirectory in the system's file explorer
+            String receivedFilesDirectory = LocalFileHelper.getReceivedFilesDirectory();
+            File receivedFile = new File(receivedFilesDirectory + File.separator + fileName);
+            try {
+                Desktop.getDesktop().open(receivedFile);
+            } catch (IOException e) {
+                messageLabel.setText("Error opening the file directory: " + e.getMessage());
             }
-        };
-
-        // Bind the progress property of the progress bar to the task progress
-        progressBar.progressProperty().bind(task.progressProperty());
-
-        // Set up actions to be performed after the task completes
-        task.setOnSucceeded(event -> {
-            String resultMessage = socketClient.getResultMessage();
-            messageLabel.setText(resultMessage);
-
-            if (socketClient.isReceived()) {
-                // Open the receivedFilesDirectory in the system's file explorer
-                String receivedFilesDirectory = LocalFileHelper.getReceivedFilesDirectory();
-                File receivedFile = new File(receivedFilesDirectory + File.separator + fileName);
-                try {
-                    Desktop.getDesktop().open(receivedFile);
-                } catch (IOException e) {
-                    messageLabel.setText("Error opening the file directory: " + e.getMessage());
-                }
-            }
-
-        });
-        task.setOnFailed(event -> {
-            messageLabel.setText("Error downloading the file.");
-        });
-
-        // Start the task in a new thread
-        Thread thread = new Thread(task);
-        thread.start();
+        }
 
     }
 }

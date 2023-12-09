@@ -112,11 +112,13 @@ public class RegisterFileStageStart {
             if (status == 200) {
                 LocalFileHelper.copyFileToSharedFolder(sourcePath);
                 savedMessageLabel.setText("The Shared File is Saved!");
-            }
+            } else savedMessageLabel.setText("");
 
 
         } else {
             selectMessageLabel.setText("No File Selected.");
+            responseMessageLabel.setText("");
+            savedMessageLabel.setText("");
         }
     }
 

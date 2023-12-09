@@ -6,3 +6,8 @@
 mvn clean javafx:run
 
 ```
+
+- Big file create
+```shell
+dd if=/dev/zero bs=1G count=10 | tr '\0' 'A' > A.txt
+```
