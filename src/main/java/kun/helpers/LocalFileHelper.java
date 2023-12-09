@@ -8,6 +8,16 @@ import java.nio.file.*;
 /**
  * The LocalFileHelper class provides methods for managing local files, including file creation,
  * copying, deletion, and listing within a shared folder structure.
+ *
+ * This class assumes a shared folder structure for file management.
+ * The shared folder structure is based on the socket server address and port.
+ * It includes methods for creating, copying, and deleting files within the shared structure.
+ * Additionally, it provides methods for listing files and opening directories.
+ *
+ * Note: Ensure that the shared folder structure is properly set before using other methods.
+ * The shared folder structure is created using the setSharedFilesDirectory method.
+ *
+ * @author Kun Xia
  */
 public class LocalFileHelper {
     private static String sharedFilesDirectory;
@@ -139,6 +149,11 @@ public class LocalFileHelper {
 
     }
 
+    /**
+     * Retrieves an array of files from the shared file directory.
+     *
+     * @return An array of File objects representing files in the shared file directory.
+     */
     public static File[] getFilesFromSharedFileDirectory() {
         File folder = new File(sharedFilesDirectory);
 
@@ -148,6 +163,12 @@ public class LocalFileHelper {
         return files;
     }
 
+    /**
+     * Opens the directory containing the received file.
+     *
+     * @param fileName The name of the received file.
+     * @return A message indicating the result of the operation.
+     */
     public static String openReceivedFileDirectory(String fileName) {
         File receivedFile = new File(receivedFilesDirectory + File.separator + fileName);
         String message = "";
@@ -168,7 +189,6 @@ public class LocalFileHelper {
 
 
     private static void setSharedFilesDirectory(String socketServerAddress, int port) {
-        // Get the user's home directory
         String userHome = System.getProperty("user.home");
         
         sharedFilesDirectory = userHome + File.separator
@@ -179,7 +199,6 @@ public class LocalFileHelper {
     }
 
     private static String getAlterSharedFilesDirectory(String socketServerAddress, int port) {
-        // Get the user's home directory
         String userHome = System.getProperty("user.home");
 
         return userHome + File.separator
@@ -190,7 +209,6 @@ public class LocalFileHelper {
     }
 
     private static void setReceivedFilesDirectory() {
-        // Get the user's home directory
         String userHome = System.getProperty("user.home");
 
         receivedFilesDirectory = userHome + File.separator

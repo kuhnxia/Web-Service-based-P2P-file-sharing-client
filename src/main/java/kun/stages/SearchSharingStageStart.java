@@ -14,18 +14,33 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
+/**
+ * The SearchSharingStageStart class represents the stage for searching shared files
+ * in the File Share Client application. It handles the initialization and configuration of the
+ * search sharing UI components.
+ *
+ * @author Kun Xia
+ */
 public class SearchSharingStageStart{
     private Stage stage;
     private TextField nameTextField;
     private Label messageLabel;
     private String fileName;
 
+    /**
+     * Initializes the SearchSharingStageStart with the specified stage.
+     *
+     * @param stage The stage for the search sharing UI.
+     */
     SearchSharingStageStart(Stage stage) {
         this.stage = stage;
         StageHelper.addStage(stage);
         initialize();
     }
 
+    /**
+     * Initializes the search sharing UI components and sets up the initial stage properties.
+     */
     private void initialize() {
         stage.setTitle("Search Sharing");
 
@@ -38,6 +53,11 @@ public class SearchSharingStageStart{
         stage.show();
     }
 
+    /**
+     * Configures the layout and appearance of the search sharing GridPane.
+     *
+     * @param searchSharingGrid The GridPane for the search sharing UI.
+     */
     private void configureSearchSharingGrid(GridPane searchSharingGrid) {
         searchSharingGrid.setAlignment(Pos.CENTER);
         searchSharingGrid.setPadding(new Insets(40, 40, 40, 40));
@@ -78,6 +98,12 @@ public class SearchSharingStageStart{
 
     }
 
+    /**
+     * Performs a search for shared files based on the entered file name.
+     * If files are found, it opens a new RequestFileStageStart for further action.
+     *
+     * @return True if shared files are found; otherwise, false.
+     */
     private boolean searchSharing() {
         boolean found =false;
 

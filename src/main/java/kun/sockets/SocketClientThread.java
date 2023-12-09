@@ -8,6 +8,7 @@ import java.net.*;
 /**
  * The SocketClientThread class represents a client thread that connects to a server,
  * requests a file, and receives the file from the server.
+ * @author Kun Xia
  */
 public class SocketClientThread extends Thread {
     private String fileName;
@@ -96,10 +97,20 @@ public class SocketClientThread extends Thread {
         return received;
     }
 
+    /**
+     * Checks whether the file was received successfully.
+     *
+     * @return true if the file was received, false otherwise.
+     */
     public boolean isReceived() {
         return received;
     }
 
+    /**
+     * Gets the result message of the file download.
+     *
+     * @return The result message indicating the status of the file download.
+     */
     public String getResultMessage() {
         return resultMessage;
     }

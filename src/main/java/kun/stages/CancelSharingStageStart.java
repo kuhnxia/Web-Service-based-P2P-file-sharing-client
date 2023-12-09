@@ -19,19 +19,33 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.util.Arrays;
 
-
+/**
+ * The CancelSharingStageStart class represents the UI for canceling file sharing in the FileShareClient application.
+ * It provides a grid with options to refresh the list of shared files, select a file to cancel sharing, and view related messages.
+ * This class interacts with the FileShareService for canceling sharing and LocalFileHelper for file-related operations.
+ *
+ * Author: Kun Xia
+ */
 public class CancelSharingStageStart {
     private Stage stage;
     private Button refreshButton;
     private ComboBox<String> fileComboBox;
     private Label messageLabel;
 
+    /**
+     * Initializes the CancelSharingStageStart with the specified stage.
+     *
+     * @param stage The stage for the cancel sharing UI.
+     */
     public CancelSharingStageStart(Stage stage) {
         this.stage = stage;
         StageHelper.addStage(stage);
         initialize();
     }
 
+    /**
+     * Initializes the cancel sharing UI components and sets up the initial stage properties.
+     */
     private void initialize() {
         stage.setTitle("Cancel Sharing");
 
@@ -46,6 +60,11 @@ public class CancelSharingStageStart {
         stage.show();
     }
 
+    /**
+     * Configures the layout and appearance of the cancel sharing GridPane.
+     *
+     * @param cancelSharingGrid The GridPane for cancel sharing UI.
+     */
     private void configureCancelSharingGrid(GridPane cancelSharingGrid) {
         cancelSharingGrid.setAlignment(Pos.CENTER);
         cancelSharingGrid.setPadding(new Insets(40, 40, 40, 40));
@@ -95,7 +114,9 @@ public class CancelSharingStageStart {
         cancelSharingGrid.add(messageLabel, 0, 2);
     }
 
-    // Method to open the sharedFilesDirectory folder and populate the file ComboBox
+    /**
+     * Populates the file ComboBox with file names from the shared file directory.
+     */
     private void showAllSharedFiles() {
 
         // Populate the file ComboBox with file names from the selected folder.
@@ -112,6 +133,11 @@ public class CancelSharingStageStart {
         }
     }
 
+    /**
+     * Shows an information pop-up to confirm the cancellation of file sharing.
+     *
+     * @param fileName The name of the file to be canceled.
+     */
     private void showInformationPopup(String fileName) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Cancel Sharing Alert");
@@ -127,6 +153,12 @@ public class CancelSharingStageStart {
         });
     }
 
+    /**
+     * Handles the user's click on the OK button in the information pop-up.
+     * Calls the FileShareService to cancel sharing and updates the UI accordingly.
+     *
+     * @param fileName The name of the file to be canceled.
+     */
     private void handleFileClick(String fileName) {
         Response response = FileShareService.cancelSharing(
                 fileName, ClientSocketHelper.getIP(), ClientSocketHelper.getPort());

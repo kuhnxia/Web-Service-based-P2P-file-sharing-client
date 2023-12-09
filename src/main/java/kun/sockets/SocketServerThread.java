@@ -4,8 +4,13 @@ import java.io.IOException;
 import java.net.*;
 
 /**
- * The SocketServerThread class represents a server thread that listens for incoming socket connections
- * and handles sharing requests from clients.
+ * Threaded server for handling sharing requests over sockets.
+ *
+ * This class listens for incoming socket connections on a specified port
+ * and creates a separate thread for each client connection to handle sharing requests.
+ * It can be stopped gracefully by calling the {@code stopServer()} method.
+ *
+ * @author Kun Xia
  */
 public class SocketServerThread extends Thread{
     private int port;
@@ -51,5 +56,8 @@ public class SocketServerThread extends Thread{
         }
     }
 
+    /**
+     * Stops the server gracefully.
+     */
     public void stopServer() { isRunning = false;}
 }

@@ -18,6 +18,12 @@ import javafx.stage.Stage;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * The MainMenuStageStart class represents the main menu stage of the File Share Client application.
+ * It handles the initialization and configuration of the main menu UI components.
+ *
+ * @author Kun Xia
+ */
 public class MainMenuStageStart {
     private Stage stage;
 
@@ -37,13 +43,20 @@ public class MainMenuStageStart {
     private Button stopClientButton;
 
 
-
+    /**
+     * Initializes the MainMenuStageStart with the specified stage.
+     *
+     * @param stage The stage for the main menu UI.
+     */
     public MainMenuStageStart(Stage stage) {
         this.stage = stage;
         StageHelper.addStage(stage);
         initialize();
     }
 
+    /**
+     * Initializes the main menu UI components and sets up the initial stage properties.
+     */
     private void initialize() {
         stage.setTitle("File Share Client");
 
@@ -56,6 +69,11 @@ public class MainMenuStageStart {
         stage.show();
     }
 
+    /**
+     * Configures the layout and appearance of the start client GridPane.
+     *
+     * @param startClientGrid The GridPane for the start client UI.
+     */
     private void configureStartClientGrid(GridPane startClientGrid) {
 
         startClientGrid.setAlignment(Pos.CENTER);
@@ -113,6 +131,11 @@ public class MainMenuStageStart {
 
     }
 
+    /**
+     * Starts the socket server and directs to the main menu scene if successful.
+     *
+     * @return True if the socket server starts successfully, false otherwise.
+     */
     private boolean startSocketServer(){
         try {
             if (ipComboBox.getValue() != null && !ipComboBox.getValue().isEmpty()) {
@@ -156,6 +179,11 @@ public class MainMenuStageStart {
         return false;
     }
 
+    /**
+     * Starts the socket server thread and creates a shared file folder for the specified IP and port.
+     *
+     * @return True if the socket server thread starts successfully, false otherwise.
+     */
     private boolean startSocketThread() {
         // Create shared file folder for specific IP and port.
         LocalFileHelper.createSharedFileDirectory(socketServerAddress, port);
@@ -166,6 +194,11 @@ public class MainMenuStageStart {
         return true;
     }
 
+    /**
+     * Configures the layout and appearance of the main menu GridPane.
+     *
+     * @param mainMenuGrid The GridPane for the main menu UI.
+     */
     private void configureMainMenuGrid(GridPane mainMenuGrid) {
         // Set grid property
         mainMenuGrid.setAlignment(Pos.CENTER);
@@ -218,6 +251,10 @@ public class MainMenuStageStart {
         mainMenuGrid.add(stopClientButton, 0, 3);
     }
 
+    /**
+     * Handles the event when the user clicks the "Stop Client" button.
+     * Closes all stages and stops the socket server.
+     */
     private void handleStopClient() {
         try {
             // Close all stages

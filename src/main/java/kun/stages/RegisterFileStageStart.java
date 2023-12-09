@@ -19,7 +19,12 @@ import javafx.stage.Stage;
 
 import java.io.*;
 
-
+/**
+ * The RegisterFileStageStart class represents the stage for registering a file in the File Share Client application.
+ * It handles the initialization and configuration of the register file UI components.
+ *
+ * @author Kun Xia
+ */
 public class RegisterFileStageStart {
     private Stage stage;
     // For Register File
@@ -29,12 +34,20 @@ public class RegisterFileStageStart {
     private Label savedMessageLabel;
 
 
+    /**
+     * Initializes the RegisterFileStageStart with the specified stage.
+     *
+     * @param stage The stage for the register file UI.
+     */
     public RegisterFileStageStart(Stage stage) {
         this.stage = stage;
         StageHelper.addStage(stage);
         initialize();
     }
 
+    /**
+     * Initializes the register file UI components and sets up the initial stage properties.
+     */
     private void initialize() {
         stage.setTitle("Register File");
 
@@ -47,6 +60,11 @@ public class RegisterFileStageStart {
         stage.show();
     }
 
+    /**
+     * Configures the layout and appearance of the register file GridPane.
+     *
+     * @param registerFileGrid The GridPane for the register file UI.
+     */
     private void configureRegisterFileGrid(GridPane registerFileGrid) {
         registerFileGrid.setAlignment(Pos.CENTER);
         registerFileGrid.setPadding(new Insets(40, 40, 40, 40));
@@ -84,6 +102,10 @@ public class RegisterFileStageStart {
         registerFileGrid.add(savedMessageLabel, 0, 3);
     }
 
+    /**
+     * Handles the event when the user clicks the "Select File to Register" button.
+     * Opens a file dialog, registers the selected file, and provides feedback.
+     */
     private void registerFile() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select File to Register");
@@ -92,7 +114,7 @@ public class RegisterFileStageStart {
         Stage stage = (Stage) chooseButton.getScene().getWindow();
         File selectedFile = fileChooser.showOpenDialog(stage);
 
-        // Process the selected file (you can add your logic here)
+        // Process the selected file
         if (selectedFile != null) {
             String sourcePath = selectedFile.getAbsolutePath();
             String fileName =  selectedFile.getName().toString().replace(" ", "_");

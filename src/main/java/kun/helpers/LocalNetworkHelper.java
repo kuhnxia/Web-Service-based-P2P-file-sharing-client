@@ -5,14 +5,24 @@ import java.net.*;
 import java.util.*;
 
 /**
- * The LocalIPAddressHelper class provides methods for retrieving local IP addresses.
+ * Helper class for working with local network-related operations.
+ *
+ * This class provides methods to retrieve local IP addresses and list ports in use.
+ * The method {@code getLocalIPAddresses()} returns a list of available IPv4 addresses.
+ * The method {@code listPortsInUse()} returns a set of ports currently in use.
+ *
+ * Note: The port listing functionality is system-dependent and currently supports Unix-like systems
+ * using the 'lsof' command. It may need modification for different operating systems.
+ *
+ * @author Kun Xia
  */
+
 public class LocalNetworkHelper {
 
     /**
-     * Gets a list of local IPv4 addresses.
+     * Retrieves a list of available local IPv4 addresses.
      *
-     * @return A List of InetAddress objects representing local IPv4 addresses.
+     * @return A List containing available local IPv4 addresses.
      */
     public static List<String> getLocalIPAddresses() {
         List<String> inet4Addresses = new ArrayList<>();
@@ -41,6 +51,11 @@ public class LocalNetworkHelper {
         return inet4Addresses;
     }
 
+    /**
+     * Lists ports currently in use on the local system.
+     *
+     * @return A Set containing ports currently in use.
+     */
     public static Set<Integer> listPortsInUse() {
         Set<Integer> inUsePortList = new HashSet<>();
         try {

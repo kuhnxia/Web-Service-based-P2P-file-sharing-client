@@ -16,18 +16,28 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
-
 import java.util.Arrays;
-import java.awt.Desktop;
-import java.io.File;
-import java.io.IOException;
 
+/**
+ * The RequestFileStageStart class represents the stage for requesting a file from other clients
+ * in the File Share Client application. It handles the initialization and configuration of the
+ * request file UI components.
+ *
+ * @author Kun Xia
+ */
 public class RequestFileStageStart {
     private Stage stage;
     private String fileName;
     private Label messageLabel;
     private ProgressBar progressBar;
     private double  progress = 0.0;
+
+    /**
+     * Initializes the RequestFileStageStart with the specified stage and file name.
+     *
+     * @param stage    The stage for the request file UI.
+     * @param fileName The name of the file to request.
+     */
     public RequestFileStageStart(Stage stage, String fileName) {
         this.stage = stage;
         this.fileName = fileName;
@@ -35,6 +45,9 @@ public class RequestFileStageStart {
         initialize();
     }
 
+    /**
+     * Initializes the request file UI components and sets up the initial stage properties.
+     */
     private void initialize() {
         stage.setTitle("Request File From Other Clients");
 
@@ -49,6 +62,11 @@ public class RequestFileStageStart {
         stage.show();
     }
 
+    /**
+     * Configures the layout and appearance of the request file GridPane.
+     *
+     * @param requestFileGrid The GridPane for the request file UI.
+     */
     private void configureRequestFileGrid(GridPane requestFileGrid) {
         requestFileGrid.setAlignment(Pos.CENTER);
         requestFileGrid.setPadding(new Insets(40, 40, 40, 40));
@@ -90,8 +108,6 @@ public class RequestFileStageStart {
             if (selectedId != null) {
                 // Display the selected ID.
                 messageLabel.setText("Selected ID: " + selectedId);
-
-                // Perform action.
                 showDownloadPopup(selectedId);
             }
         });
@@ -103,6 +119,11 @@ public class RequestFileStageStart {
         requestFileGrid.add(progressBar, 0, 4);
     }
 
+    /**
+     * Displays a pop-up confirmation dialog for downloading the file with the selected ID.
+     *
+     * @param selectedId The selected ID for downloading the file.
+     */
     private void showDownloadPopup(String selectedId) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Download Alert");
@@ -118,6 +139,11 @@ public class RequestFileStageStart {
         });
     }
 
+    /**
+     * Retrieves the list of available file IDs for the given file name and populates the ComboBox.
+     *
+     * @param fileComboBox The ComboBox for selecting the target file ID.
+     */
     private void showTargetFileIds(ComboBox<String> fileComboBox) {
         Response response = FileShareService.findSharedFiles(fileName);
         int status = response.getStatus();
@@ -137,6 +163,12 @@ public class RequestFileStageStart {
         }
     }
 
+    /**
+     * Retrieves socket information for the selected client ID, initiates file download,
+     * and updates the UI accordingly.
+     *
+     * @param selectedId The selected client ID for file download.
+     */
     private void getSocketInfoAndRequestFile(String selectedId) {
         int id = Integer.parseInt(selectedId);
 
