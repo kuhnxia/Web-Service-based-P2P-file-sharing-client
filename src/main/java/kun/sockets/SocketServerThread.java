@@ -2,6 +2,10 @@ package kun.sockets;
 
 import java.io.IOException;
 import java.net.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Threaded server for handling sharing requests over sockets.
@@ -15,15 +19,23 @@ import java.net.*;
 public class SocketServerThread extends Thread{
     private int port;
     private boolean isRunning;
+    private ExecutorService threadPool;
 
     /**
-     * Constructs a new SocketServerThread with the specified port.
+     * Constructs a new SocketServerThread with the specified port and thread pool size.
      *
      * @param port The port number to listen on.
      */
-    public SocketServerThread(int port) {
+    public SocketServerThread(int port, int corePoolSize, int maxPoolSize) {
         this.port = port;
-        isRunning = true;
+        this.isRunning = true;
+        this.threadPool = new ThreadPoolExecutor(
+                corePoolSize,
+                maxPoolSize,
+                60L, TimeUnit.SECONDS,
+                new SynchronousQueue<Runnable>()
+        );
+
     }
 
     /**
@@ -39,8 +51,7 @@ public class SocketServerThread extends Thread{
             while (isRunning) {
                 try {
                     Socket clientSocket = serverSocket.accept();
-                    Thread clientThread = new Thread(new SharingRequestHandler(clientSocket));
-                    clientThread.start();
+                    threadPool.execute(new SharingRequestHandler(clientSocket));
                 } catch (SocketTimeoutException ignored) {
                     // SocketTimeoutException will be thrown when the accept() times out
                     // Periodically check isRunning to gracefully handle server shutdown
@@ -53,11 +64,16 @@ public class SocketServerThread extends Thread{
             serverSocket.close();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            threadPool.shutdown();
         }
     }
 
     /**
      * Stops the server gracefully.
      */
-    public void stopServer() { isRunning = false;}
+    public void stopServer() {
+        isRunning = false;
+        threadPool.shutdown();
+    }
 }

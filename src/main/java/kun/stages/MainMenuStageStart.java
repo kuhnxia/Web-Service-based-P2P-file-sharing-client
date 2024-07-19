@@ -189,7 +189,7 @@ public class MainMenuStageStart {
         LocalFileHelper.createSharedFileDirectory(socketServerAddress, port);
 
         // Create server socket
-        socketServer = new SocketServerThread(port);
+        socketServer = new SocketServerThread(port, 10, 1000);
         socketServer.start();
         return true;
     }
